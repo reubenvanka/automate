@@ -8,6 +8,7 @@
 - Product implementation: None.
 - Hardware approval: Not applicable yet; hardware decisions remain TODO.
 - MCP/KiCad foundation validation: Project creation, 50 × 40 mm PCB outline setup, ERC, and DRC passed in a temporary validation project.
+- GitHub publishing: `gh` 2.100.0 is installed; browser authentication is pending, so no remote or push has been created.
 - Human release approval: Pending; this is a foundation commit, not a product release.
 
 ## Evidence checklist
