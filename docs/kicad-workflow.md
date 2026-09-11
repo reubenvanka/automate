@@ -8,6 +8,10 @@
 6. Record all violations and human review decisions.
 7. Require approval before final connections, placement, routing, safety, or manufacturing release.
 
+## Validation status
+
+The modern-Python MCP server starts successfully, exposes 45 tools, and completed a temporary workflow covering project creation, a 50 × 40 mm PCB outline, ERC, and DRC. This validates the text-parser and `kicad-cli` path only; Auto Mate hardware decisions still require human approval.
+
 ## Local tool paths
 
 - KiCad app: `/Applications/KiCad/KiCad.app`

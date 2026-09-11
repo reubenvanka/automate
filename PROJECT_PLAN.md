@@ -42,4 +42,4 @@
 
 ## Current status
 
-Phase 0 foundation is being initialized. Hardware-dependent implementation is blocked on approved TODO resolutions.
+Phase 0 foundation is initialized, and the MCP/KiCad foundation workflow has been validated. Hardware-dependent implementation remains blocked on approved controller, GPIO, electrical, UX, and safety decisions.

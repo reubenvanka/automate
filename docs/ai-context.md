@@ -25,7 +25,7 @@ Auto Mate is a smart-room controller for coordinated lighting and fan/environmen
 
 - ESPHome: product-approved version and packages from `platform/iot-platform`.
 - KiCad: installed KiCad 10.0.6 and `/opt/homebrew/bin/kicad-cli`.
-- MCP: verified command only; PCB API limitations remain visible.
+- MCP: modern-Python server environment validated for startup, 45 registered tools, project creation, PCB outline setup, ERC, and DRC; PCB API limitations remain visible.
 
 ## Review boundary
 
