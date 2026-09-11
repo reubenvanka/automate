@@ -1,0 +1,63 @@
+# Secrets and local configuration
+*.pem
+*.key
+*.p12
+*.pfx
+.env
+.env.*
+!.env.example
+secrets.yaml
+secrets.yml
+secrets/*.yaml
+secrets/*.yml
+*.credentials
+*.token
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# ESPHome and firmware output
+.esphome/
+*.ota.bin
+*.factory.bin
+*.uf2
+*.bin
+*.elf
+*.map
+*.log
+
+# KiCad local/generated files
+*.lck
+*.tmp
+*.bak
+*_backup/
+pcbnew/
+*.pdf
+*.png
+*.svg
+*.step
+*.wrl
+*.dxf
+*.gerber
+*.gbr
+*.drl
+*.csv
+*.net
+*.rpt
+*.plot
+*.zip
+
+# Test and release working files
+coverage/
+.htmlcov/
+*.orig
+*.rej
+
+# macOS
+.DS_Store
