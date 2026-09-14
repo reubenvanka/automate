@@ -6,7 +6,7 @@
 # 74HC595 Shift Register Configuration (ESPHome native sn74hc595)
 sn74hc595:
   - id: sr_relays
-    data_pin: GPIO20   # SER
+    data_pin: GPIO0   # SER (GPIO20 NOT on DevKit header; GPIO0 freed from PCA9685 OE)
     clock_pin: GPIO23  # SRCLK
     latch_pin: GPIO15  # RCLK (GPIO24 is not exposed in ESP32 IO mux; GPIO15 free)
     sr_count: 1

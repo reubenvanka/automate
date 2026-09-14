@@ -52,7 +52,7 @@ Wire each ESP32 GPIO leg to its destination. Save label net names per `docs/pin-
 | From (ESP32 pin) | To | Net name (label) |
 |------------------|----|------------------|
 | GPIO0 | — (free — no OE gate; module strapped low) | — |
-| GPIO20 | U2 SER | `SER` |
+| GPIO0 | U2 SER | `SER` |
 | GPIO23 | U2 SRCLK | `SRCLK` |
 | GPIO15 | U2 RCLK | `RCLK` |
 | GPIO21 | J2_PCA9685 + sensors SDA | `I2C_SDA` |
@@ -78,7 +78,7 @@ Insert **1N5817** (anode to 74HC595, cathode to relay node) between each 74HC595
 | CH7 | U2-6 | J5-8 | SW1-19 | SW1-7 |
 | CH8 | U2-7 | J5-9 | SW1-20 | SW1-8 |
 
-- 74HC595 control legs: SER (U2-14) → GPIO20; SRCLK (U2-11) → GPIO23; RCLK (U2-12) → GPIO15; OE (U2-13) → GND; SRCLR (U2-10) → 3.3V via 10kΩ; VCC (U2-16) → 3.3V; GND (U2-8) → GND.
+- 74HC595 control legs: SER (U2-14) → GPIO0; SRCLK (U2-11) → GPIO23; RCLK (U2-12) → GPIO15; OE (U2-13) → GND; SRCLR (U2-10) → 3.3V via 10kΩ; VCC (U2-16) → 3.3V; GND (U2-8) → GND.
 - J5-P10 → +5V (relay module VCC). J5-P1 → GND.
 
 ### 2.3 Power rails

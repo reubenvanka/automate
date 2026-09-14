@@ -10,7 +10,7 @@
 
 | GPIO | Function | Type | Voltage Domain | Notes |
 |------|----------|------|----------------|-------|
-| **GPIO0** | — RESERVED / FREE — | — | 3.3V | Strapping — PCA9685 OE strapped LOW in module; no OE gate, no pull-up |
+| **GPIO0** | 74HC595_SER | Digital Out | 3.3V | Shift register serial data (strapping/BOOT — no external pull) |
 | **GPIO1** | UART0_TX (debug) | UART | 3.3V | **RESERVED** — do not assign |
 | **GPIO2** | On-board LED / Status | Digital Out | 3.3V | On-board blue LED (active-LOW) |
 | **GPIO3** | UART0_RX (debug) | UART | 3.3V | **RESERVED** — do not assign |
@@ -24,7 +24,7 @@
 | **GPIO16–17** | FLASH | — | — | **DO NOT USE** — internal to ESP32 |
 | **GPIO18** | CEILING_WARM (LEDC CH0) | LEDC PWM | 3.3V | Free GPIO |
 | **GPIO19** | CEILING_COLD (LEDC CH1) | LEDC PWM | 3.3V | Free GPIO |
-| **GPIO20** | 74HC595_SER | Digital Out | 3.3V | Shift register serial data |
+| **GPIO20** | NOT ON DEVKIT HEADER | — | — | Valid on chip but not broken out on the DevKit — DO NOT USE |
 | **GPIO21** | I²C_SDA | I²C | 3.3V | 4.7kΩ pull-up (verify module) |
 | **GPIO22** | I²C_SCL | I²C | 3.3V | 4.7kΩ pull-up (verify module) |
 | **GPIO23** | 74HC595_SRCLK | Digital Out | 3.3V | Shift register clock |
@@ -111,7 +111,7 @@ Note: OE is strapped LOW in the module (outputs always enabled). No ESP32 OE gat
 
 | 74HC595 Pin | ESP32 GPIO | Function |
 |-------------|------------|----------|
-| SER (Pin 14) | GPIO20 | Serial Data In |
+| SER (Pin 14) | GPIO0 | Serial Data In |
 | SRCLK (Pin 11) | GPIO23 | Shift Register Clock |
 | RCLK (Pin 12) | GPIO15 | Register Clock (Latch) |
 | OE/G (Pin 13) | GND | Tied LOW (always enabled) |

@@ -44,6 +44,7 @@
 **ESPHome-hardware-constraint GPIO changes from the original budget:**
 - 74HC595 latch/RCLK → **GPIO15** (GPIO24 is not exposed in the ESP32 IO mux).
 - Door sensor → **GPIO14** (GPIO34–39 do not support `INPUT_PULLUP`).
+- **74HC595 serial data (SER) → GPIO0** (GPIO20 is NOT broken out on the ESP32-WROOM DevKit header; GPIO0 was freed after removing the PCA9685 OE; GPIO0 is the BOOT/strapping pin, no external pull).
 
 **Known limitations carried in this build:**
 - `state_machine.yaml` **not included**: it relied on `custom_component:`, which ESPHome removed; scene persistence/restore API services are stubbed logs and need porting to an external component.
