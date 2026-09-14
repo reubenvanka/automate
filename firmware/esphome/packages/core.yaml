@@ -1,0 +1,96 @@
+# Core ESPHome configuration for AutoMate
+# Provides WiFi, API, OTA, logging, and base services
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${friendly_name}
+  project:
+    name: "automate.controller"
+    version: "1.0.0"
+  on_boot:
+    then:
+      - delay: 100ms  # Brief pause for hardware stabilization
+      - logger.log: "Boot sequence: Sensor validation placeholder"
+      - logger.log: "state_manager not ported (ESPHome removed custom_component); restore skipped"
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# WiFi configuration (credentials in secrets.yaml)
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: !secret static_ip
+    gateway: !secret gateway
+    subnet: 255.255.255.0
+    dns1: !secret dns1
+  # Enable fallback AP for recovery
+  ap:
+    ssid: "${friendly_name} Fallback"
+    password: !secret fallback_ap_password
+
+# ESPHome native API for Home Assistant
+api:
+  encryption:
+    key: !secret api_encryption_key
+  services:
+    - service: restore_state
+      then:
+        - logger.log: "state_manager not ported; restore unavailable"
+    - service: save_scene
+      variables:
+        scene_id: int
+        name: string
+      then:
+        - logger.log: "state_manager not ported; save_scene unavailable"
+    - service: load_scene
+      variables:
+        scene_id: int
+      then:
+        - logger.log: "state_manager not ported; load_scene unavailable"
+    - service: delete_scene
+      variables:
+        scene_id: int
+      then:
+        - logger.log: "state_manager not ported; delete_scene unavailable"
+
+# OTA with health-gate
+ota:
+  platform: esphome
+  on_begin:
+    then:
+      - logger.log: "OTA update starting..."
+      - logger.log: "Relays keep their current state during OTA (no forced turn-off)"
+  on_end:
+    then:
+      - logger.log: "OTA update completed"
+      - logger.log: "Post-OTA health check not yet implemented (health_check/ota_rollback undefined)"
+
+# Logging
+logger:
+  level: DEBUG
+  baud_rate: 115200
+
+# Enable Home Assistant native API
+web_server:
+  port: 80
+  auth:
+    username: !secret web_username
+    password: !secret web_password
+
+# Time for scheduling and logging
+time:
+  - platform: homeassistant
+    id: ha_time
+
+# NVS for persistent storage
+preferences:
+  flash_write_interval: 30s
+
+# Global substitution values
+substitutions:
+  device_name: "automate-controller"
+  friendly_name: "AutoMate Controller"

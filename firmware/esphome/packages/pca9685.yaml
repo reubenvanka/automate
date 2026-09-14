@@ -1,0 +1,169 @@
+# PCA9685 Configuration for AutoMate
+# Single 16-channel PWM expander @ I2C address 0x40.
+# CH0-CH13 assigned (14 channels). CH14=BACKUP_01, CH15=BACKUP_02 kept as
+# NAMED backup channels so future devices can be mapped without restructuring.
+# OE is strapped LOW in the module (outputs always enabled): no ESP32 OE gate,
+# no pull-up, and no GPIO is allocated for OE.
+
+i2c:
+  - id: bus_a
+    sda: GPIO21
+    scl: GPIO22
+    frequency: 50kHz
+
+pca9685:
+  - id: pca9685_hub
+    i2c_id: bus_a
+    address: 0x40
+    frequency: 1000Hz
+
+output:
+  # --- Active channels (CH0-CH13) ---
+  - platform: pca9685
+    id: output_monitor1_backlight
+    pca9685_id: pca9685_hub
+    channel: 0
+  - platform: pca9685
+    id: output_desk_light1
+    pca9685_id: pca9685_hub
+    channel: 1
+  - platform: pca9685
+    id: output_table_light
+    pca9685_id: pca9685_hub
+    channel: 2
+  - platform: pca9685
+    id: output_shelf_light1
+    pca9685_id: pca9685_hub
+    channel: 3
+  - platform: pca9685
+    id: output_monitor2_backlight
+    pca9685_id: pca9685_hub
+    channel: 4
+  - platform: pca9685
+    id: output_desk_light2
+    pca9685_id: pca9685_hub
+    channel: 5
+  - platform: pca9685
+    id: output_shelf_light2
+    pca9685_id: pca9685_hub
+    channel: 6
+  - platform: pca9685
+    id: output_cupboard_bounce_light
+    pca9685_id: pca9685_hub
+    channel: 7
+  - platform: pca9685
+    id: output_cupboard_spot_light
+    pca9685_id: pca9685_hub
+    channel: 8
+  - platform: pca9685
+    id: output_door_spot_light
+    pca9685_id: pca9685_hub
+    channel: 9
+  - platform: pca9685
+    id: output_monitor3_backlight
+    pca9685_id: pca9685_hub
+    channel: 10
+  - platform: pca9685
+    id: output_monitor4_backlight
+    pca9685_id: pca9685_hub
+    channel: 11
+  - platform: pca9685
+    id: output_exhaust_fans
+    pca9685_id: pca9685_hub
+    channel: 12
+  - platform: pca9685
+    id: output_terrace_ambient_light
+    pca9685_id: pca9685_hub
+    channel: 13
+
+  # --- Backup channels (CH14-CH15) - named, reserved for future devices ---
+  - platform: pca9685
+    id: output_backup_01
+    pca9685_id: pca9685_hub
+    channel: 14
+  - platform: pca9685
+    id: output_backup_02
+    pca9685_id: pca9685_hub
+    channel: 15
+
+light:
+  - platform: monochromatic
+    id: light_monitor1_backlight
+    name: "Monitor 1 Backlight"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_monitor1_backlight
+  - platform: monochromatic
+    id: light_desk_light1
+    name: "Desk Light 1"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_desk_light1
+  - platform: monochromatic
+    id: light_table_light
+    name: "Table Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_table_light
+  - platform: monochromatic
+    id: light_shelf_light1
+    name: "Shelf Light 1"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_shelf_light1
+  - platform: monochromatic
+    id: light_monitor2_backlight
+    name: "Monitor 2 Backlight"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_monitor2_backlight
+  - platform: monochromatic
+    id: light_desk_light2
+    name: "Desk Light 2"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_desk_light2
+  - platform: monochromatic
+    id: light_shelf_light2
+    name: "Shelf Light 2"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_shelf_light2
+  - platform: monochromatic
+    id: light_cupboard_bounce
+    name: "Cupboard Bounce Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_cupboard_bounce_light
+  - platform: monochromatic
+    id: light_cupboard_spot
+    name: "Cupboard Spot Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_cupboard_spot_light
+  - platform: monochromatic
+    id: light_door_spot
+    name: "Door Spot Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_door_spot_light
+  - platform: monochromatic
+    id: light_monitor3_backlight
+    name: "Monitor 3 Backlight"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_monitor3_backlight
+  - platform: monochromatic
+    id: light_monitor4_backlight
+    name: "Monitor 4 Backlight"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_monitor4_backlight
+  - platform: monochromatic
+    id: light_exhaust_fans
+    name: "Exhaust Fans"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_exhaust_fans
+  - platform: monochromatic
+    id: light_terrace_ambient
+    name: "Terrace Ambient Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_terrace_ambient_light
+  - platform: monochromatic
+    id: light_backup_01
+    name: "BACKUP_01"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_backup_01
+  - platform: monochromatic
+    id: light_backup_02
+    name: "BACKUP_02"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_backup_02

@@ -1,0 +1,124 @@
+# PWM Configuration for AutoMate (Approved Transport)
+# 10 LEDC outputs from ESP32: 6 CCT (high-speed CH0-5) + 4 single-channel.
+# All at 10 kHz for smooth dimming and no camera flicker.
+#
+# GPIO Assignment (10 ESP32 LEDC channels):
+#   GPIO18 -> Ceiling Warm      (LEDC CH0)
+#   GPIO19 -> Ceiling Cold      (LEDC CH1)
+#   GPIO25 -> Desk 1 Warm       (LEDC CH2)
+#   GPIO26 -> Desk 1 Cold       (LEDC CH3)
+#   GPIO4  -> Desk 2 Warm       (LEDC CH4)  [strapping - no external pull]
+#   GPIO5  -> Desk 2 Cold       (LEDC CH5)  [strapping - no external pull]
+#   GPIO12 -> Photo Spot Light  (LEDC CH6)
+#   GPIO13 -> Wall Bounce Light (LEDC CH7)
+#   GPIO27 -> Terrace Light     (LEDC CH8)
+#   GPIO33 -> Washroom Light    (LEDC CH9)
+#
+# Reserved / not for PWM:
+#   GPIO1/3 = UART0; GPIO6-11,16,17 = flash; GPIO28-31 not exposed;
+#   GPIO34-39 input-only; GPIO21/22 = I2C; GPIO0 = PCA9685 OE;
+#   GPIO20/23/24 = 74HC595; GPIO2 = on-board LED; GPIO32 = 30A relay.
+# All remaining single-channel outputs route through PCA9685 (packages/pca9685.yaml).
+
+output:
+  - platform: ledc
+    id: output_ceiling_warm
+    pin: GPIO18
+    frequency: 10000Hz
+
+  - platform: ledc
+    id: output_ceiling_cold
+    pin: GPIO19
+    frequency: 10000Hz
+
+  - platform: ledc
+    id: output_desk1_warm
+    pin: GPIO25
+    frequency: 10000Hz
+
+  - platform: ledc
+    id: output_desk1_cold
+    pin: GPIO26
+    frequency: 10000Hz
+
+  - platform: ledc
+    id: output_desk2_warm
+    pin: GPIO4
+    frequency: 10000Hz
+
+  - platform: ledc
+    id: output_desk2_cold
+    pin: GPIO5
+    frequency: 10000Hz
+
+  - platform: ledc
+    id: output_photo_spot_light
+    pin: GPIO12
+    frequency: 10000Hz
+
+  - platform: ledc
+    id: output_wall_bounce_light
+    pin: GPIO13
+    frequency: 10000Hz
+
+  - platform: ledc
+    id: output_terrace_light
+    pin: GPIO27
+    frequency: 10000Hz
+
+  - platform: ledc
+    id: output_washroom_light
+    pin: GPIO33
+    frequency: 10000Hz
+
+light:
+  - platform: cwww
+    id: light_ceiling
+    name: "Ceiling Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    cold_white: output_ceiling_cold
+    warm_white: output_ceiling_warm
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2500 K
+
+  - platform: cwww
+    id: light_desk1
+    name: "Desk 1 Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    cold_white: output_desk1_cold
+    warm_white: output_desk1_warm
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2500 K
+
+  - platform: cwww
+    id: light_desk2
+    name: "Desk 2 Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    cold_white: output_desk2_cold
+    warm_white: output_desk2_warm
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2500 K
+
+  - platform: monochromatic
+    id: light_photo_spot
+    name: "Photo Spot Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_photo_spot_light
+
+  - platform: monochromatic
+    id: light_wall_bounce
+    name: "Wall Bounce Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_wall_bounce_light
+
+  - platform: monochromatic
+    id: light_terrace
+    name: "Terrace Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_terrace_light
+
+  - platform: monochromatic
+    id: light_washroom
+    name: "Washroom Light"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: output_washroom_light

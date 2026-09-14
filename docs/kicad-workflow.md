@@ -1,4 +1,4 @@
-# Auto Mate KiCad Workflow
+# AutoMate KiCad Workflow
 
 1. Create a KiCad 10 project skeleton after hardware architecture is approved.
 2. Add approved symbols and candidate connections.
@@ -10,7 +10,7 @@
 
 ## Validation status
 
-The modern-Python MCP server starts successfully, exposes 45 tools, and completed a temporary workflow covering project creation, a 50 × 40 mm PCB outline, ERC, and DRC. This validates the text-parser and `kicad-cli` path only; Auto Mate hardware decisions still require human approval.
+The modern-Python MCP server starts successfully, exposes 45 tools, and completed a temporary workflow covering project creation, a 50 × 40 mm PCB outline, ERC, and DRC. This validates the text-parser and `kicad-cli` path only; AutoMate hardware decisions still require human approval.
 
 ## Local tool paths
 

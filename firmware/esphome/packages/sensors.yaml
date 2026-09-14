@@ -1,0 +1,112 @@
+# Environmental Sensors Configuration for AutoMate
+# AHT20 (Temperature/Humidity), BMP280 (Pressure/Temperature), BH1750 (Light), Door Sensor
+
+# AHT20 - Temperature and Humidity Sensor
+# I2C address: 0x38 (typical)
+sensor:
+  - platform: aht10
+    variant: AHT20
+    i2c_id: bus_a
+    temperature:
+      id: temp_aht20
+      name: "Ambient Temperature"
+      accuracy_decimals: 1
+      # Calibration offset can be applied if needed
+    humidity:
+      id: humidity_aht20
+      name: "Relative Humidity"
+      accuracy_decimals: 1
+    update_interval: 30s
+
+# BMP280 - Barometric Pressure and Temperature Sensor
+# I2C address: 0x76 or 0x77 (depending on SDO pin)
+  - platform: bmp280_i2c
+    i2c_id: bus_a
+    temperature:
+      id: temp_bmp280
+      name: "BMP280 Temperature"
+      accuracy_decimals: 1
+      # Alternative temperature source (can average with AHT20)
+    pressure:
+      id: bmp280_pressure
+      name: "Atmospheric Pressure"
+      unit_of_measurement: "hPa"
+      accuracy_decimals: 1
+    update_interval: 30s
+    # Oversampling settings for better accuracy
+    # temperature_oversampling: 16x
+    # pressure_oversampling: 16x
+    # filter_coefficient: 16
+
+# BH1750 - Ambient Light Sensor
+# I2C address: 0x23 or 0x5C (depending on ADDR pin)
+  - platform: bh1750
+    i2c_id: bus_a
+    name: "Ambient Light Level"
+    accuracy_decimals: 0
+    unit_of_measurement: "lx"
+    update_interval: 10s
+    # Measurement modes:
+    # - 0x00: Continuous High Resolution Mode (1 lx res, 120ms)
+    # - 0x01: Continuous High Resolution Mode 2 (0.5 lx res, 120ms)
+    # - 0x02: Continuous Low Resolution Mode (4 lx res, 16ms)
+    # - 0x10: One Time High Resolution Mode (1 lx res, 120ms)
+    # - 0x11: One Time High Resolution Mode 2 (0.5 lx res, 120ms)
+    # - 0x20: One Time Low Resolution Mode (4 lx res, 16ms)
+    # Default: Continuous High Resolution Mode
+
+# Door Sensor (MC-38 Magnetic Contact)
+# Normally Open (NO) contact to GND
+# Uses internal pull-up on ESP32, inverted logic (closed = HIGH when magnet near)
+binary_sensor:
+  - platform: gpio
+    id: door_contact
+    name: "Door Sensor"
+    pin:
+      number: GPIO14
+      mode: INPUT_PULLUP
+      inverted: true  # NO contact: OPEN = HIGH (not inverted), CLOSED = LOW (inverted to HIGH)
+    # When door is closed (magnet near), switch closes to GND → reads LOW → inverted to HIGH
+    # When door is open, switch open → pull-up makes it HIGH → inverted to LOW
+    # So: inverted: true means door OPEN = False (off), door CLOSED = True (on)
+    # Adjust based on actual wiring and desired logic
+    filters:
+      - delayed_on: 50ms   # Debounce to prevent false triggers
+      - delayed_off: 50ms
+    # Optional: Add timeout for door left open
+    #   - lambda: return x && (millis() - last_change < 300000);  # 5-minute timeout
+
+# Alternative door sensor configuration (if wiring differs)
+# If wiring is: NO contact to 3.3V, then use:
+#   pin:
+#     number: GPIO36
+#     mode: INPUT_PULLDOWN
+#   # No inversion needed - OPEN = LOW, CLOSED = HIGH
+#   filters:
+#     - delayed_on: 50ms
+#     - delayed_off: 50ms
+
+# Sensor Groups for Easy Reference
+# (Can be used in automations or templates)
+
+# Note on I2C Address Conflicts:
+# - AHT20: 0x38
+# - BMP280: 0x76 or 0x77
+# - BH1750: 0x23 or 0x5C
+# - PCA9685: 0x40 (from pca9685.yaml)
+# All addresses are distinct - no conflicts on shared bus
+
+# Update Intervals Justification:
+# - Temperature/Humidity: 30s (slow changing)
+# - Pressure: 30s (slow changing)
+# - Light Level: 10s (can change faster, but 10s is reasonable)
+# - Door Sensor: Event-driven (no polling needed) + 50ms debounce
+
+# IR Remote Control Receiver (VS1838B)
+# Connected to GPIO39 (input-only pin, safe for use)
+remote_receiver:
+  pin:
+    number: GPIO39
+    inverted: true  # VS1838B outputs active-low signal; invert to active-high for decoder
+  dump:
+    - nec

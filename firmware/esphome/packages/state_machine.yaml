@@ -1,0 +1,173 @@
+# State Management Package for AutoMate
+# Handles desired/effective state, scene persistence, safe restoration, and validation
+
+esphome:
+  includes:
+    - packages/state_manager.h
+
+# Custom C++ component for state management
+custom_component:
+  - lambda: |-
+      #include "state_manager.h"
+      auto *manager = new StateManager();
+      App.register_component(manager);
+      return {manager};
+
+# State Manager C++ class
+# This would be in a separate header file, but we define inline for ESPHome
+
+# Text sensor for state debugging
+text_sensor:
+  - platform: template
+    name: "AutoMate System State"
+    id: system_state_text
+    icon: "mdi:state-machine"
+    update_interval: 5s
+
+  - platform: template
+    name: "AutoMate Last Scene"
+    id: last_scene_text
+    icon: "mdi:movie"
+    update_interval: 10s
+
+# Binary sensors for maintenance modes
+binary_sensor:
+  - platform: template
+    name: "Ceiling Maintenance Mode"
+    id: ceiling_maint_mode
+    device_class: "running"
+    lambda: |-
+      return id(state_manager).get_maintenance_mode(RELAY_CEILING) != MAINTENANCE_AUTO;
+    icon: "mdi:ceiling-light"
+
+  - platform: template
+    name: "12V Maintenance Mode"
+    id: maint_12v_mode
+    device_class: "running"
+    lambda: |-
+      return id(state_manager).get_maintenance_mode(RELAY_12V) != MAINTENANCE_AUTO;
+    icon: "mdi:current-dc"
+
+  - platform: template
+    name: "Stabilizer Maintenance Mode"
+    id: maint_stabilizer_mode
+    device_class: "running"
+    lambda: |-
+      return id(state_manager).get_maintenance_mode(RELAY_STABILIZER) != MAINTENANCE_AUTO;
+    icon: "mdi:flash"
+
+# Select for maintenance mode control
+select:
+  - platform: template
+    name: "Ceiling Relay Mode"
+    id: ceiling_mode_select
+    icon: "mdi:ceiling-light"
+    options:
+      - "AUTO"
+      - "FORCE_ON"
+      - "FORCE_OFF"
+    optimistic: true
+    set_action:
+      then:
+        - lambda: |-
+            id(state_manager).set_maintenance_mode(RELAY_CEILING, static_cast<MaintenanceMode>(x));
+        - homeassistant.service:
+            service: persistent_notification.create
+            data:
+              title: "AutoMate Maintenance"
+              message: "Ceiling relay set to {{ x }}"
+
+  - platform: template
+    name: "12V Relay Mode"
+    id: relay_12v_mode_select
+    icon: "mdi:current-dc"
+    options:
+      - "AUTO"
+      - "FORCE_ON"
+      - "FORCE_OFF"
+    optimistic: true
+    set_action:
+      then:
+        - lambda: |-
+            id(state_manager).set_maintenance_mode(RELAY_12V, static_cast<MaintenanceMode>(x));
+
+  - platform: template
+    name: "Stabilizer Relay Mode"
+    id: relay_stabilizer_mode_select
+    icon: "mdi:flash"
+    options:
+      - "AUTO"
+      - "FORCE_ON"
+      - "FORCE_OFF"
+    optimistic: true
+    set_action:
+      then:
+        - lambda: |-
+            id(state_manager).set_maintenance_mode(RELAY_STABILIZER, static_cast<MaintenanceMode>(x));
+
+# Buttons for scene and state management
+button:
+  - platform: template
+    name: "Restore Valid State"
+    id: btn_restore_state
+    icon: "mdi:restore"
+    on_press:
+      then:
+        - lambda: |-
+            id(state_manager).restore_valid_state();
+
+  - platform: template
+    name: "Save Current as Scene 1"
+    id: btn_save_scene_1
+    icon: "mdi:bookmark-plus"
+    on_press:
+      then:
+        - lambda: |-
+            id(state_manager).save_scene(1, "Scene 1");
+
+  - platform: template
+    name: "Load Scene 1"
+    id: btn_load_scene_1
+    icon: "mdi:bookmark"
+    on_press:
+      then:
+        - lambda: |-
+            id(state_manager).load_scene(1);
+
+# Number inputs for fade curves
+number:
+  - platform: template
+    name: "Ceiling Fade Time"
+    id: ceiling_fade_time
+    icon: "mdi:timer"
+    min_value: 0
+    max_value: 300
+    step: 1
+    unit_of_measurement: "s"
+    mode: box
+    initial_value: 2
+    set_action:
+      then:
+        - lambda: |-
+            id(pwm_controller).set_fade_time(PWM_CEILING_WARM, x);
+            id(pwm_controller).set_fade_time(PWM_CEILING_COLD, x);
+
+  - platform: template
+    name: "Min Off Threshold"
+    id: min_off_threshold
+    icon: "mdi:brightness-percent"
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    mode: slider
+    initial_value: 5
+    set_action:
+      then:
+        - lambda: |-
+            id(pwm_controller).set_min_off_threshold(PWM_CEILING_WARM, x / 100.0f);
+            id(pwm_controller).set_min_off_threshold(PWM_CEILING_COLD, x / 100.0f);
+            id(pwm_controller).set_min_off_threshold(PWM_DESK1_WARM, x / 100.0f);
+            id(pwm_controller).set_min_off_threshold(PWM_DESK1_COLD, x / 100.0f);
+            id(pwm_controller).set_min_off_threshold(PWM_DESK2_WARM, x / 100.0f);
+            id(pwm_controller).set_min_off_threshold(PWM_DESK2_COLD, x / 100.0f);

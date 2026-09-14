@@ -1,0 +1,19 @@
+# AutoMate — ESPHome main configuration (assembly)
+# File: firmware/esphome/configuration.yaml
+#
+# Compose:  esphome compile configuration.yaml
+# Secrets:  create `secrets.yaml` in this folder (wifi_ssid, wifi_password,
+#           static_ip, gateway, dns1, fallback_ap_password, api_encryption_key,
+#           web_username, web_password) — never commit it.
+#
+# This file merges the modular packages. ESPHome concatenates list keys
+# (output, light, switch, sensor, i2c, ...) and deep-merges dict keys
+# (esphome, wifi, ...) across all included packages.
+
+packages:
+  core: !include packages/core.yaml
+  pwm: !include packages/pwm.yaml
+  pca9685: !include packages/pca9685.yaml
+  relays: !include packages/relays.yaml
+  sensors: !include packages/sensors.yaml
+  energy: !include packages/energy-sensors.yaml

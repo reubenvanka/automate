@@ -1,0 +1,139 @@
+# Relay Configuration for AutoMate
+# 74HC595 shift register (8 relays) + 1 direct 30A relay
+# 74HC595 powered at 3.3V (eliminates need for level shifter)
+# Relay module verified to work with 3.3V logic
+
+# 74HC595 Shift Register Configuration (ESPHome native sn74hc595)
+sn74hc595:
+  - id: sr_relays
+    data_pin: GPIO20   # SER
+    clock_pin: GPIO23  # SRCLK
+    latch_pin: GPIO15  # RCLK (GPIO24 is not exposed in ESP32 IO mux; GPIO15 free)
+    sr_count: 1
+    # OE/G tied to GND on the board (always enabled) - oe_pin omitted.
+    # SRCLR/MR tied to 3.3V on the board (clear deasserted).
+
+# Individual relay outputs from the 74HC595 register.
+# `inverted: true` so switch ON -> register bit 0 -> Q output LOW -> active-LOW
+# relay-module input grounded (relay ON). `number` = register pin (Q0..Q7).
+output:
+  - platform: gpio
+    id: relay_fan
+    pin: { sn74hc595: sr_relays, number: 0, inverted: true }  # Q0 - Fan
+  - platform: gpio
+    id: relay_ceiling_driver
+    pin: { sn74hc595: sr_relays, number: 1, inverted: true }  # Q1 - Ceiling Driver
+  - platform: gpio
+    id: relay_12v_driver
+    pin: { sn74hc595: sr_relays, number: 2, inverted: true }  # Q2 - 12V Driver
+  - platform: gpio
+    id: relay_stabilizer
+    pin: { sn74hc595: sr_relays, number: 3, inverted: true }  # Q3 - Stabilizer
+  - platform: gpio
+    id: relay_desk1
+    pin: { sn74hc595: sr_relays, number: 4, inverted: true }  # Q4 - Desk 1
+  - platform: gpio
+    id: relay_desk2
+    pin: { sn74hc595: sr_relays, number: 5, inverted: true }  # Q5 - Desk 2
+  - platform: gpio
+    id: relay_desk3
+    pin: { sn74hc595: sr_relays, number: 6, inverted: true }  # Q6 - Desk 3
+  - platform: gpio
+    id: relay_16a
+    pin: { sn74hc595: sr_relays, number: 7, inverted: true }  # Q7 - 16A
+
+# Direct 30A relay (active-LOW)
+  - platform: gpio
+    id: relay_30a
+    pin:
+      number: GPIO32
+      inverted: true  # Active-LOW relay
+
+# Relay control switches (for Home Assistant interface)
+switch:
+  - platform: template
+    id: switch_fan
+    name: "Fan Switch"
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - output.turn_on: relay_fan
+    turn_off_action:
+      - output.turn_off: relay_fan
+  
+  - platform: template
+    id: switch_ceiling_driver
+    name: "Ceiling Driver Switch"
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - output.turn_on: relay_ceiling_driver
+    turn_off_action:
+      - output.turn_off: relay_ceiling_driver
+  
+  - platform: template
+    id: switch_12v_driver
+    name: "12V Driver Switch"
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - output.turn_on: relay_12v_driver
+    turn_off_action:
+      - output.turn_off: relay_12v_driver
+  
+  - platform: template
+    id: switch_stabilizer
+    name: "Stabilizer Switch"
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - output.turn_on: relay_stabilizer
+    turn_off_action:
+      - output.turn_off: relay_stabilizer
+  
+  - platform: template
+    id: switch_desk1
+    name: "Desk 1 Switch"
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - output.turn_on: relay_desk1
+    turn_off_action:
+      - output.turn_off: relay_desk1
+  
+  - platform: template
+    id: switch_desk2
+    name: "Desk 2 Switch"
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - output.turn_on: relay_desk2
+    turn_off_action:
+      - output.turn_off: relay_desk2
+  
+  - platform: template
+    id: switch_desk3
+    name: "Desk 3 Switch"
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - output.turn_on: relay_desk3
+    turn_off_action:
+      - output.turn_off: relay_desk3
+  
+  - platform: template
+    id: switch_16a
+    name: "16A Switch"
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - output.turn_on: relay_16a
+    turn_off_action:
+      - output.turn_off: relay_16a
+  
+  - platform: template
+    id: switch_30a
+    name: "30A Main Switch"
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - output.turn_on: relay_30a
+    turn_off_action:
+      - output.turn_off: relay_30a
+
+# Note: All relays default to OFF state due to:
+# - 74HC595: 10kΩ pull-ups to 5V on relay module inputs
+# - 30A relay: 10kΩ pull-up to 3.3V on GPIO32
+# - 74HC595 OE/G tied to GND (enabled) but SRCLR/MR tied to 3.3V (disabled)
+# - ESP32 GPIOs default to inputs on boot, then configured as outputs

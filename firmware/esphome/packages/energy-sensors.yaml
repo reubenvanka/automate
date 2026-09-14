@@ -1,0 +1,114 @@
+# Energy Monitoring Configuration for AutoMate
+# ZMCT103C Current Sensor + ZMPT101B Voltage Sensor
+# Includes RMS calculation, power factor, and energy accumulation
+
+# Current Sensor: ZMCT103C (1000:1 turns ratio, 5mA @ 5A, max 10A)
+# Conditioning circuit:
+# - 150Ω burden resistor → 1.5V peak at 10A
+# - 2x 10kΩ bias divider → 1.65V center
+# - 10µF DC blocking capacitor
+# - 100nF filter + 1kΩ series + 3.3V Zener clamp
+# - ADC1_CH6 (GPIO34) with 11dB attenuation
+
+# Voltage Sensor: ZMPT101B (0-5V output, 5V supply)
+# Conditioning circuit:
+# - 2x 10kΩ divider → 2:1 ratio (5V IN → 2.5V MAX OUT)
+# - 100nF filter + 1kΩ series + 3.3V Zener clamp
+# - ADC1_CH7 (GPIO35) with 11dB attenuation
+
+# Raw ADC sensors for calibration and debugging
+sensor:
+  - platform: adc
+    id: adc_raw_current
+    name: "Raw Current ADC"
+    pin: GPIO34
+    update_interval: 1000ms
+    # For debugging only - not used in production
+
+  - platform: adc
+    id: adc_raw_voltage
+    name: "Raw Voltage ADC"
+    pin: GPIO35
+    update_interval: 1000ms
+    # For debugging only - not used in production
+
+# RMS Current Sensor (calculated from ADC samples)
+# Based on ZMCT103C characteristics:
+# - 1000:1 turns ratio
+# - 5mA secondary current at 5A primary
+# - 150Ω burden → 0.75V RMS at 5A (1.06V peak)
+# - With biasing: 1.65V ± 0.75V RMS at 5A
+  - platform: template
+    id: rms_current
+    name: "RMS Current"
+    unit_of_measurement: "A"
+    accuracy_decimals: 2
+    # Actual calculation would be done via lambda or external component
+    # This is a placeholder - real implementation requires sampling and RMS calculation
+    lambda: |-
+      // Placeholder - actual RMS calculation requires:
+      // 1. Sample ADC at sufficient rate (>2kHz for 50/60Hz)
+      // 2. Subtract bias (1.65V equivalent)
+      // 3. Calculate RMS of AC component
+      // 4. Convert to primary current: I_primary = I_secondary * 1000
+      // 5. Apply burden and scaling factors
+      return 0.0;  // TODO: Implement proper RMS calculation
+
+# RMS Voltage Sensor (calculated from ADC samples)
+# Based on ZMPT101B characteristics:
+# - 2:1 divider (5V AC IN → 2.5V AC OUT max)
+# - With 10kΩ/10kΩ divider: V_out = V_in * (10k/(10k+10k)) = V_in * 0.5
+  - platform: template
+    id: rms_voltage
+    name: "RMS Voltage"
+    unit_of_measurement: "V"
+    accuracy_decimals: 1
+    lambda: |-
+      // Placeholder - actual RMS calculation requires:
+      // 1. Sample ADC at sufficient rate (>2kHz for 50/60Hz)
+      // 2. Calculate RMS of ADC readings
+      // 3. Convert to input voltage: V_in = V_out * (R1+R2)/R2 = V_out * 2
+      return 0.0;  // TODO: Implement proper RMS calculation
+
+# Power Calculation (P = V_rms * I_rms * Power Factor)
+# For simplicity, assuming unity power factor (resistive load)
+# More accurate implementation would measure phase difference
+  - platform: template
+    id: active_power
+    name: "Active Power"
+    unit_of_measurement: "W"
+    accuracy_decimals: 1
+    lambda: |-
+      // Placeholder calculation
+      // Real implementation would:
+      // 1. Calculate RMS current and voltage
+      // 2. Measure phase difference for power factor
+      // 3. P = V_rms * I_rms * PF
+      return (id(rms_voltage).state * id(rms_current).state);  // Assumes PF=1.0
+
+# Energy Accumulation (kWh = ∫P dt / 3.6e6)
+  - platform: total_daily_energy
+    id: daily_energy
+    name: "Daily Energy"
+    power_id: active_power
+    unit_of_measurement: "kWh"
+    accuracy_decimals: 3
+
+# Power Factor Calculation (placeholder for future enhancement)
+# Would require measuring zero-crossings or using DSP techniques
+  - platform: template
+    id: power_factor
+    name: "Power Factor"
+    unit_of_measurement: ""
+    accuracy_decimals: 2
+    lambda: return 1.0;  // Placeholder - assumes unity PF
+
+# Optional: Harmonic analysis or THD calculation (advanced feature)
+# Would require higher sampling rates and FFT processing
+
+# Note: For production implementation, consider:
+# 1. Using ESP32's I2S peripheral for synchronous sampling
+# 2. Implementing proper RMS calculation in C++ component
+# 3. Adding calibration routines for component tolerances
+# 4. Implementing power factor correction measurement
+# 5. Adding surge/overcurrent protection detection

@@ -1,4 +1,4 @@
-# Auto Mate Security and Privacy
+# AutoMate Security and Privacy
 
 - Never commit Wi-Fi credentials, Home Assistant tokens, API keys, private keys, customer data, or private commercial information.
 - Keep secrets in an external secret store or local ignored file.
