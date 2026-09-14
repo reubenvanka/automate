@@ -92,78 +92,110 @@ light:
     name: "Monitor 1 Backlight"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_monitor1_backlight
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_desk_light1
     name: "Desk Light 1"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_desk_light1
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_table_light
     name: "Table Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_table_light
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_shelf_light1
     name: "Shelf Light 1"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_shelf_light1
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_monitor2_backlight
     name: "Monitor 2 Backlight"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_monitor2_backlight
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_desk_light2
     name: "Desk Light 2"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_desk_light2
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_shelf_light2
     name: "Shelf Light 2"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_shelf_light2
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_cupboard_bounce
     name: "Cupboard Bounce Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_cupboard_bounce_light
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_cupboard_spot
     name: "Cupboard Spot Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_cupboard_spot_light
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_door_spot
     name: "Door Spot Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_door_spot_light
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_monitor3_backlight
     name: "Monitor 3 Backlight"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_monitor3_backlight
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_monitor4_backlight
     name: "Monitor 4 Backlight"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_monitor4_backlight
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_exhaust_fans
     name: "Exhaust Fans"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_exhaust_fans
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_terrace_ambient
     name: "Terrace Ambient Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_terrace_ambient_light
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_backup_01
     name: "BACKUP_01"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_backup_01
+    on_state:
+      - script.execute: blink_led
   - platform: monochromatic
     id: light_backup_02
     name: "BACKUP_02"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_backup_02
+    on_state:
+      - script.execute: blink_led

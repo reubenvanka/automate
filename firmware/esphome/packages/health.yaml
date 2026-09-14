@@ -1,0 +1,44 @@
+# ESP32 / firmware health monitoring for AutoMate
+# Temperature, uptime, Wi-Fi signal/state, versions, and online status.
+
+sensor:
+  - platform: internal_temperature
+    name: "ESP32 Temperature"
+    id: esp32_temp
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    update_interval: 10s
+
+  - platform: uptime
+    name: "Uptime"
+    id: uptime_sec
+    unit_of_measurement: "s"
+    accuracy_decimals: 0
+    update_interval: 30s
+
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    id: wifi_signal_db
+    unit_of_measurement: "dBm"
+    device_class: signal_strength
+    state_class: measurement
+    accuracy_decimals: 1
+    update_interval: 30s
+
+text_sensor:
+  - platform: version
+    name: "ESPHome Version"
+
+  - platform: wifi_info
+    ip_address:
+      name: "IP Address"
+    ssid:
+      name: "Connected SSID"
+    mac_address:
+      name: "MAC Address"
+
+binary_sensor:
+  - platform: status
+    name: "ESPHome Online"

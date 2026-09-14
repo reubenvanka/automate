@@ -17,3 +17,4 @@ packages:
   relays: !include packages/relays.yaml
   sensors: !include packages/sensors.yaml
   energy: !include packages/energy-sensors.yaml
+  health: !include packages/health.yaml

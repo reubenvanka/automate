@@ -80,6 +80,8 @@ light:
     warm_white: output_ceiling_warm
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2500 K
+    on_state:
+      - script.execute: blink_led
 
   - platform: cwww
     id: light_desk1
@@ -89,6 +91,8 @@ light:
     warm_white: output_desk1_warm
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2500 K
+    on_state:
+      - script.execute: blink_led
 
   - platform: cwww
     id: light_desk2
@@ -98,27 +102,37 @@ light:
     warm_white: output_desk2_warm
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2500 K
+    on_state:
+      - script.execute: blink_led
 
   - platform: monochromatic
     id: light_photo_spot
     name: "Photo Spot Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_photo_spot_light
+    on_state:
+      - script.execute: blink_led
 
   - platform: monochromatic
     id: light_wall_bounce
     name: "Wall Bounce Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_wall_bounce_light
+    on_state:
+      - script.execute: blink_led
 
   - platform: monochromatic
     id: light_terrace
     name: "Terrace Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_terrace_light
+    on_state:
+      - script.execute: blink_led
 
   - platform: monochromatic
     id: light_washroom
     name: "Washroom Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_washroom_light
+    on_state:
+      - script.execute: blink_led

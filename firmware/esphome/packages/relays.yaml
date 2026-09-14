@@ -57,8 +57,10 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     turn_on_action:
       - output.turn_on: relay_fan
+      - script.execute: blink_led
     turn_off_action:
       - output.turn_off: relay_fan
+      - script.execute: blink_led
   
   - platform: template
     id: switch_ceiling_driver
@@ -66,8 +68,10 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     turn_on_action:
       - output.turn_on: relay_ceiling_driver
+      - script.execute: blink_led
     turn_off_action:
       - output.turn_off: relay_ceiling_driver
+      - script.execute: blink_led
   
   - platform: template
     id: switch_12v_driver
@@ -75,8 +79,10 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     turn_on_action:
       - output.turn_on: relay_12v_driver
+      - script.execute: blink_led
     turn_off_action:
       - output.turn_off: relay_12v_driver
+      - script.execute: blink_led
   
   - platform: template
     id: switch_stabilizer
@@ -84,8 +90,10 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     turn_on_action:
       - output.turn_on: relay_stabilizer
+      - script.execute: blink_led
     turn_off_action:
       - output.turn_off: relay_stabilizer
+      - script.execute: blink_led
   
   - platform: template
     id: switch_desk1
@@ -93,8 +101,10 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     turn_on_action:
       - output.turn_on: relay_desk1
+      - script.execute: blink_led
     turn_off_action:
       - output.turn_off: relay_desk1
+      - script.execute: blink_led
   
   - platform: template
     id: switch_desk2
@@ -102,8 +112,10 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     turn_on_action:
       - output.turn_on: relay_desk2
+      - script.execute: blink_led
     turn_off_action:
       - output.turn_off: relay_desk2
+      - script.execute: blink_led
   
   - platform: template
     id: switch_desk3
@@ -111,8 +123,10 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     turn_on_action:
       - output.turn_on: relay_desk3
+      - script.execute: blink_led
     turn_off_action:
       - output.turn_off: relay_desk3
+      - script.execute: blink_led
   
   - platform: template
     id: switch_16a
@@ -120,8 +134,10 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     turn_on_action:
       - output.turn_on: relay_16a
+      - script.execute: blink_led
     turn_off_action:
       - output.turn_off: relay_16a
+      - script.execute: blink_led
   
   - platform: template
     id: switch_30a
@@ -129,8 +145,10 @@ switch:
     restore_mode: RESTORE_DEFAULT_OFF
     turn_on_action:
       - output.turn_on: relay_30a
+      - script.execute: blink_led
     turn_off_action:
       - output.turn_off: relay_30a
+      - script.execute: blink_led
 
 # Note: All relays default to OFF state due to:
 # - 74HC595: 10kΩ pull-ups to 5V on relay module inputs
