@@ -1,3 +1,14 @@
+## Firmware validation & build (2026-09-14)
+- `esphome config configuration.yaml` → exit code 0 (only strapping-pin warnings remain)
+- `esphome compile configuration.yaml` → SUCCESS — firmware binaries built:
+  - `firmware.bin` (~950 KB)
+  - `firmware.ota.bin` (~950 KB)
+  - `firmware.factory.bin` (~1.0 MB)
+- All external pull-ups/downs on module inputs removed (per spec).
+- GPIO15 used for 74HC595 RCLK; GPIO14 for door sensor.
+- Restore behavior applied to all 23 lights + 9 relays via `restore_mode: RESTORE_DEFAULT_OFF`.
+- Firmware bin size: ~950 KB.
+- Known limitations: energy-sensors.yaml still returns placeholder RMS values (0.00 A) until real RMS/energy calculation is implemented.
 # AutoMate Release Evidence
 
 ## Current foundation release
