@@ -1,0 +1,398 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AutoMate">
+    <title>AutoMate</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #f5f5f7;
+            --card: #ffffff;
+            --text: #1d1d1f;
+            --text2: #86868b;
+            --border: #d2d2d7;
+            --accent: #0071e3;
+            --green: #34c759;
+            --orange: #ff9500;
+            --red: #ff3b30;
+            --radius: 12px;
+            --wave-op: 0.6;
+}
+        [data-theme="dark"] {
+            --bg: #000000;
+            --card: #1c1c1e;
+            --text: #f5f5f7;
+            --text2: #98989d;
+            --border: #38383a;
+            --accent: #0a84ff;
+            --wave-op: 0.35;
+        }
+
+/* Relay Control Styles */
+        .relay-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .relay-item {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .relay-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .relay-label {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text);
+        }
+        .relay-toggle {
+            position: relative;
+            width: 64px;
+            height: 36px;
+        }
+        .relay-checkbox {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .relay-switch {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+        .relay-switch:before {
+            position: absolute;
+            content: "";
+            height: 28px;
+            width: 28px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .relay-checkbox:checked + .relay-switch {
+            background-color: var(--green);
+        }
+        .relay-checkbox:checked + .relay-switch:before {
+            transform: translateX(28px);
+        }
+        .relay-state {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: var(--bg);
+            color: var(--text2);
+            border: 1px solid var(--border);
+        }
+        .relay-state.on {
+            background: var(--green);
+            color: white;
+            border-color: var(--green);
+        }
+        .relay-state.off {
+            background: var(--red);
+            color: white;
+            border-color: var(--red);
+        }
+        }
+</style>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231d1d1f'/><path d='M30 30 L70 70 M70 30 L30 70' stroke='%235ac8fa' stroke-width='8' stroke-linecap='round'/></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<div id="themeTransition" class="theme-transition"></div>
+    <div class="container">
+        <div class="topbar">
+            <div class="topbar-left">
+                <div id="themeBtn" class="theme-btn" title="Toggle theme">
+                    <svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="5"/>
+                    </svg>
+                </div>
+                <h1>AutoMate Dashboard</h1>
+            </div>
+            <div id="activityIndicator" class="activity-indicator">
+                <div class="dot"></div>
+                <span id="activityText">Idle</span>
+            </div>
+        </div>
+    <div class="grid">
+            <!-- System Status Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">System Status</h2>
+                    <div class="card-subtitle">Last updated: <span id="lastUpdate">--</span></div>
+                </div>
+                <div class="card-value" id="systemStatus">Online</div>
+                <div class="card-unit">Status</div>
+                <div class="card-status">
+                    <div class="status-dot" id="wifiStatus"></div>
+                    <span>WiFi</span>
+                    <div class="status-dot" id="mqttStatus"></div>
+                    <span>MQTT</span>
+                </div>
+</div>
+            
+            <!-- Tank Level Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Water Tank</h2>
+                    <div class="card-subtitle">Current level</div>
+                </div>
+                <div class="gauge-container">
+                    <div class="gauge"></div>
+                    <div class="gauge-overlay">
+                        <div class="gauge-value" id="tankLevel">0</div>
+                        <div class="gauge-label">%</div>
+                    </div>
+                </div>
+                <div class="card-value" id="tankVolume">0 L</div>
+                <div class="card-unit">Volume</div>
+            </div>
+<!-- Temperature Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Temperature</h2>
+                    <div class="card-subtitle">Living Room</div>
+                </div>
+                <div class="card-value" id="temperature">--.°C</div>
+                <div class="card-unit">Temperature</div>
+                <div class="card-status">
+<!-- Humidity Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Humidity</h2>
+                    <div class="card-subtitle">Living Room</div>
+                </div>
+                <div class="card-value" id="humidity">--.%</div>
+                <div class="card-unit">Humidity</div>
+                <div class="card-status">
+<!-- Power Consumption Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Power Consumption</h2>
+                    <div class="card-subtitle">Current usage</div>
+                </div>
+                <div class="card-value" id="powerConsumption">0 W</div>
+                <div class="card-unit">Power</div>
+                <div class="card-value" id="dailyEnergy">0 kWh</div>
+<!-- Solar Power Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Solar Power</h2>
+                    <div class="card-subtitle">Current generation</div>
+                </div>
+                <div class="card-value" id="solarPower">0 W</div>
+                <div class="card-unit">Power</div>
+                <div class="card-value" id="dailySolar">0 kWh</div>
+<!-- Relay Control Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Relay Control</h2>
+                    <div class="card-subtitle">Manual override</div>
+                </div>
+                <div class="relay-grid">
+                    <div class="relay-item">
+                        <div class="relay-label">Fan</div>
+                        <div class="relay-toggle">
+                            <input type="checkbox" id="switch_fan" class="relay-checkbox" data-switch="switch_fan">
+                            <label for="switch_fan" class="relay-switch"></label>
+                        </div>
+                        <div class="relay-state" id="fanState">OFF</div>
+                    </div>
+                    <div class="relay-item">
+                        <div class="relay-label">Ceiling Driver</div>
+                        <div class="relay-toggle">
+                            <input type="checkbox" id="switch_ceiling_driver" class="relay-checkbox" data-switch="switch_ceiling_driver">
+                            <label for="switch_ceiling_driver" class="relay-switch"></label>
+                        </div>
+                        <div class="relay-state" id="ceilingDriverState">OFF</div>
+                    </div>
+                    <div class="relay-item">
+                        <div class="relay-label">12V Driver</div>
+                        <div class="relay-toggle">
+                            <input type="checkbox" id="switch_12v_driver" class="relay-checkbox" data-switch="switch_12v_driver">
+                            <label for="switch_12v_driver" class="relay-switch"></label>
+                        </div>
+                        <div class="relay-state" id="driver12vState">OFF</div>
+                    </div>
+                    <div class="relay-item">
+                        <div class="relay-label">Stabilizer</div>
+                        <div class="relay-toggle">
+                            <input type="checkbox" id="switch_stabilizer" class="relay-checkbox" data-switch="switch_stabilizer">
+                            <label for="switch_stabilizer" class="relay-switch"></label>
+                        </div>
+                        <div class="relay-state" id="stabilizerState">OFF</div>
+                    </div>
+                    <div class="relay-item">
+                        <div class="relay-label">Desk 1</div>
+                        <div class="relay-toggle">
+                            <input type="checkbox" id="switch_desk1" class="relay-checkbox" data-switch="switch_desk1">
+                            <label for="switch_desk1" class="relay-switch"></label>
+                        </div>
+                        <div class="relay-state" id="desk1State">OFF</div>
+                    </div>
+                    <div class="relay-item">
+                        <div class="relay-label">Desk 2</div>
+                        <div class="relay-toggle">
+                            <input type="checkbox" id="switch_desk2" class="relay-checkbox" data-switch="switch_desk2">
+                            <label for="switch_desk2" class="relay-switch"></label>
+                        </div>
+                        <div class="relay-state" id="desk2State">OFF</div>
+                    </div>
+                    <div class="relay-item">
+                        <div class="relay-label">Desk 3</div>
+                        <div class="relay-toggle">
+                            <input type="checkbox" id="switch_desk3" class="relay-checkbox" data-switch="switch_desk3">
+                            <label for="switch_desk3" class="relay-switch"></label>
+                        </div>
+                        <div class="relay-state" id="desk3State">OFF</div>
+                    </div>
+                    <div class="relay-item">
+                        <div class="relay-label">16A</div>
+                        <div class="relay-toggle">
+                            <input type="checkbox" id="switch_16a" class="relay-checkbox" data-switch="switch_16a">
+                            <label for="switch_16a" class="relay-switch"></label>
+                        </div>
+                        <div class="relay-state" id="a16State">OFF</div>
+                    </div>
+                    <div class="relay-item">
+                        <div class="relay-label">30A Main</div>
+                        <div class="relay-toggle">
+                            <input type="checkbox" id="switch_30a" class="relay-checkbox" data-switch="switch_30a">
+                            <label for="switch_30a" class="relay-switch"></label>
+                        </div>
+                        <div class="relay-state" id="a30State">OFF</div>
+                    </div>
+                </div>
+            </div>
+                </div>
+        </div>
+
+<script>
+// Relay Control JavaScript
+const RELAY_SWITCHES = {
+    'switch_fan': 'fanState',
+    'switch_ceiling_driver': 'ceilingDriverState',
+    'switch_12v_driver': 'driver12vState',
+    'switch_stabilizer': 'stabilizerState',
+    'switch_desk1': 'desk1State',
+    'switch_desk2': 'desk2State',
+    'switch_desk3': 'desk3State',
+    'switch_16a': 'a16State',
+    'switch_30a': 'a30State'
+};
+
+async function callEsphomeService(service, entityId) {
+    try {
+        const response = await fetch('/api/services/switch/' + service, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ entity_id: entityId })
+        });
+        return response.ok;
+    } catch (error) {
+        console.error('API call failed:', error);
+        return false;
+    }
+}
+
+function updateRelayState(switchId, state) {
+    const stateElementId = RELAY_SWITCHES[switchId];
+    if (!stateElementId) return;
+    
+    const checkbox = document.getElementById(switchId);
+    const stateEl = document.getElementById(stateElementId);
+    
+    if (checkbox) {
+        checkbox.checked = state;
+    }
+    if (stateEl) {
+        stateEl.textContent = state ? 'ON' : 'OFF';
+        stateEl.className = 'relay-state ' + (state ? 'on' : 'off');
+    }
+}
+
+async function toggleRelay(switchId, entityId) {
+    const checkbox = document.getElementById(switchId);
+    const newState = checkbox.checked;
+    
+    // Optimistic UI update
+    updateRelayState(switchId, newState);
+    
+    try {
+        const service = newState ? 'turn_on' : 'turn_off';
+        const success = await callEsphomeService(service, entityId);
+        if (!success) {
+            // Revert on failure
+            updateRelayState(switchId, !newState);
+            console.error('Failed to toggle ' + entityId);
+        }
+    } catch (error) {
+        updateRelayState(switchId, !newState);
+        console.error('Error toggling relay:', error);
+    }
+}
+
+function initializeRelaySwitches() {
+    Object.keys(RELAY_SWITCHES).forEach(switchId => {
+        const checkbox = document.getElementById(switchId);
+        if (!checkbox) return;
+        
+        checkbox.addEventListener('change', function() {
+            toggleRelay(switchId, this.dataset.switch);
+        });
+        
+        // Initial state fetch
+        fetchState(switchId);
+    });
+}
+
+async function fetchState(switchId) {
+    try {
+        const response = await fetch('/api/states/' + switchId);
+        if (response.ok) {
+            const data = await response.json();
+            const state = data.state === 'on';
+            updateRelayState(switchId, state);
+        }
+    } catch (error) {
+        console.error('Failed to fetch state for ' + switchId, error);
+    }
+}
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', initializeRelaySwitches);
+
+// Periodic state refresh
+setInterval(() => {
+    Object.keys(RELAY_SWITCHES).forEach(switchId => {
+        fetchState(switchId);
+    });
+}, 5000);
+</script>

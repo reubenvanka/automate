@@ -13,8 +13,168 @@ esphome:
       - script.execute: blink_led   # boot 'alive' blink 1
       - delay: 300ms
       - script.execute: blink_led   # boot 'alive' blink 2
-      - logger.log: "Boot sequence: Sensor validation placeholder"
-      - logger.log: "state_manager not ported (ESPHome removed custom_component); restore skipped"
+      - logger.log: "Booted - Restoring device states"
+      # Restore all light states from globals
+      - lambda: |-
+          // Restore Ceiling Light (CCT)
+          if (id(ceiling_prev_state)) {
+            auto call = id(light_ceiling).turn_on();
+            call.set_brightness(id(ceiling_prev_brightness));
+            call.set_color_temperature(id(ceiling_prev_color_temp));
+            call.perform();
+            ESP_LOGD("boot", "Restored Ceiling: On - %s, Brightness - %.0f%%, Temperature - %d K", id(ceiling_prev_state) ? "Yes" : "No", id(ceiling_prev_brightness) * 100, (int)(1000000.0 / id(ceiling_prev_color_temp)));
+            id(relay_ceiling_driver).turn_on();  // Restore ceiling driver relay
+            id(switch_ceiling_driver).publish_state(true);
+            id(ceiling_driver_prev_state) = true;
+          } else {
+            ESP_LOGD("boot", "No saved Ceiling state, defaulting to off");
+            id(relay_ceiling_driver).turn_off();
+            id(switch_ceiling_driver).publish_state(false);
+            id(ceiling_driver_prev_state) = false;
+          }
+          // Restore Desk 1 Light (CCT)
+          if (id(desk1_prev_state)) {
+            auto call = id(light_desk1).turn_on();
+            call.set_brightness(id(desk1_prev_brightness));
+            call.set_color_temperature(id(desk1_prev_color_temp));
+            call.perform();
+            ESP_LOGD("boot", "Restored Desk1: On - %s, Brightness - %.0f%%, Temperature - %d K", id(desk1_prev_state) ? "Yes" : "No", id(desk1_prev_brightness) * 100, (int)(1000000.0 / id(desk1_prev_color_temp)));
+          } else {
+            ESP_LOGD("boot", "No saved Desk1 state, defaulting to off");
+          }
+          // Restore Desk 2 Light (CCT)
+          if (id(desk2_prev_state)) {
+            auto call = id(light_desk2).turn_on();
+            call.set_brightness(id(desk2_prev_brightness));
+            call.set_color_temperature(id(desk2_prev_color_temp));
+            call.perform();
+            ESP_LOGD("boot", "Restored Desk2: On - %s, Brightness - %.0f%%, Temperature - %d K", id(desk2_prev_state) ? "Yes" : "No", id(desk2_prev_brightness) * 100, (int)(1000000.0 / id(desk2_prev_color_temp)));
+          } else {
+            ESP_LOGD("boot", "No saved Desk2 state, defaulting to off");
+          }
+          // Restore Photo Spot Light
+          if (id(photo_spot_prev_state)) {
+            auto call = id(light_photo_spot).turn_on();
+            call.set_brightness(id(photo_spot_prev_brightness));
+            call.perform();
+            ESP_LOGD("boot", "Restored Photo Spot: On - %s, Brightness - %.0f%%", id(photo_spot_prev_state) ? "Yes" : "No", id(photo_spot_prev_brightness) * 100);
+          } else {
+            ESP_LOGD("boot", "No saved Photo Spot state, defaulting to off");
+          }
+          // Restore Wall Bounce Light
+          if (id(wall_bounce_prev_state)) {
+            auto call = id(light_wall_bounce).turn_on();
+            call.set_brightness(id(wall_bounce_prev_brightness));
+            call.perform();
+            ESP_LOGD("boot", "Restored Wall Bounce: On - %s, Brightness - %.0f%%", id(wall_bounce_prev_state) ? "Yes" : "No", id(wall_bounce_prev_brightness) * 100);
+          } else {
+            ESP_LOGD("boot", "No saved Wall Bounce state, defaulting to off");
+          }
+          // Restore Terrace Light
+          if (id(terrace_prev_state)) {
+            auto call = id(light_terrace).turn_on();
+            call.set_brightness(id(terrace_prev_brightness));
+            call.perform();
+            ESP_LOGD("boot", "Restored Terrace: On - %s, Brightness - %.0f%%", id(terrace_prev_state) ? "Yes" : "No", id(terrace_prev_brightness) * 100);
+          } else {
+            ESP_LOGD("boot", "No saved Terrace state, defaulting to off");
+          }
+          // Restore Washroom Light
+          if (id(washroom_prev_state)) {
+            auto call = id(light_washroom).turn_on();
+            call.set_brightness(id(washroom_prev_brightness));
+            call.perform();
+            ESP_LOGD("boot", "Restored Washroom: On - %s, Brightness - %.0f%%", id(washroom_prev_state) ? "Yes" : "No", id(washroom_prev_brightness) * 100);
+          } else {
+            ESP_LOGD("boot", "No saved Washroom state, defaulting to off");
+          }
+      # Restore all relay states from globals
+      - lambda: |-
+          // Restore Fan
+          if (id(fan_prev_state)) {
+            id(relay_fan).turn_on();
+            id(switch_fan).publish_state(true);
+          } else {
+            id(relay_fan).turn_off();
+            id(switch_fan).publish_state(false);
+          }
+          // Restore Ceiling Driver
+          if (id(ceiling_driver_prev_state)) {
+            id(relay_ceiling_driver).turn_on();
+            id(switch_ceiling_driver).publish_state(true);
+          } else {
+            id(relay_ceiling_driver).turn_off();
+            id(switch_ceiling_driver).publish_state(false);
+          }
+          // Restore 12V Driver
+          if (id(driver12v_prev_state)) {
+            id(relay_12v_driver).turn_on();
+            id(switch_12v_driver).publish_state(true);
+          } else {
+            id(relay_12v_driver).turn_off();
+            id(switch_12v_driver).publish_state(false);
+          }
+          // Restore Voltage Stabilizer
+          if (id(stabilizer_prev_state)) {
+            id(relay_stabilizer).turn_on();
+            id(switch_stabilizer).publish_state(true);
+          } else {
+            id(relay_stabilizer).turn_off();
+            id(switch_stabilizer).publish_state(false);
+          }
+          // Restore Desk 1
+          if (id(desk1_prev_state)) {
+            id(relay_desk1).turn_on();
+            id(switch_desk1).publish_state(true);
+          } else {
+            id(relay_desk1).turn_off();
+            id(switch_desk1).publish_state(false);
+          }
+          // Restore Desk 2
+          if (id(desk2_prev_state)) {
+            id(relay_desk2).turn_on();
+            id(switch_desk2).publish_state(true);
+          } else {
+            id(relay_desk2).turn_off();
+            id(switch_desk2).publish_state(false);
+          }
+          // Restore Desk 3
+          if (id(desk3_prev_state)) {
+            id(relay_desk3).turn_on();
+            id(switch_desk3).publish_state(true);
+          } else {
+            id(relay_desk3).turn_off();
+            id(switch_desk3).publish_state(false);
+          }
+          // Restore 16A Relay
+          if (id(relay_16a_prev_state)) {
+            id(relay_16a).turn_on();
+            id(switch_16a).publish_state(true);
+          } else {
+            id(relay_16a).turn_off();
+            id(switch_16a).publish_state(false);
+          }
+          // Restore 30A Relay
+          if (id(relay_30a_prev_state)) {
+            id(relay_30a).turn_on();
+            id(switch_30a).publish_state(true);
+          } else {
+            id(relay_30a).turn_off();
+            id(switch_30a).publish_state(false);
+          }
+          // Update voltage stabilizer based on desk states
+          if (id(switch_desk1).state || id(switch_desk2).state || id(switch_desk3).state) {
+            id(relay_stabilizer).turn_on();
+            id(switch_stabilizer).publish_state(true);
+            id(stabilizer_prev_state) = true;
+          }
+          // Update ceiling driver based on ceiling light state (already done above)
+          ESP_LOGD("boot", "Restored relays: Fan - %s, CeilingDrv - %s, 12V - %s, Stab - %s, Desk1 - %s, Desk2 - %s, Desk3 - %s, 16A - %s, 30A - %s",
+            id(fan_prev_state) ? "On" : "Off", id(ceiling_driver_prev_state) ? "On" : "Off",
+            id(driver12v_prev_state) ? "On" : "Off", id(stabilizer_prev_state) ? "On" : "Off",
+            id(desk1_prev_state) ? "On" : "Off", id(desk2_prev_state) ? "On" : "Off",
+            id(desk3_prev_state) ? "On" : "Off", id(relay_16a_prev_state) ? "On" : "Off",
+            id(relay_30a_prev_state) ? "On" : "Off");
       - output.turn_off: activity_led  # ensure LED is OFF after boot
 
 esp32:
@@ -86,9 +246,9 @@ time:
   - platform: homeassistant
     id: ha_time
 
-# NVS for persistent storage
+# NVS for persistent storage - immediate writes for reliable state restoration
 preferences:
-  flash_write_interval: 30s
+  flash_write_interval: 0s
 
 # On-board activity/status LED (GPIO2) - discovered active-HIGH on this DevKit
 output:

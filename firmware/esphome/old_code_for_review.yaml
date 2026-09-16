@@ -1,0 +1,469 @@
+# Paste your old ESPHome configuration code here for review
+# This file is for analysis only - not compiled
+
+# Base ESPHome configuration for ESP32
+esphome:
+  name: office-controller
+  friendly_name: Studio Controller
+  on_boot:
+    then:
+      - logger.log: "Booted - Restoring device states"
+      - lambda: |-
+          // Restore CCT light
+          if (id(cct_prev_state)) {
+            auto call = id(office_cct_light).turn_on();
+            call.set_brightness(id(cct_prev_brightness));
+            call.set_color_temperature(id(cct_prev_color_temp));
+            call.perform();
+            ESP_LOGD("boot", "Restored CCT state: On - %s, Brightness - %.0f%%, Temperature - %d K", id(cct_prev_state) ? "Yes" : "No", id(cct_prev_brightness) * 100, (int)(1000000.0 / id(cct_prev_color_temp)));
+            id(cct_driver_relay).turn_on();  // Restore CCT driver relay based on CCT state
+          } else {
+            ESP_LOGD("boot", "No saved CCT state, defaulting to on");
+            id(cct_driver_relay).turn_off();
+          }
+          // Restore monochromatic lights
+          if (id(mono1_prev_state)) {
+            auto call = id(mono_light1).turn_on();
+            call.set_brightness(id(mono1_prev_brightness));
+            call.perform();
+            ESP_LOGD("boot", "Restored Mono1 state: On - %s, Brightness - %.0f%%", id(mono1_prev_state) ? "Yes" : "No", id(mono1_prev_brightness) * 100);
+          } else {
+            ESP_LOGD("boot", "No saved Mono1 state, defaulting to off");
+          }
+          if (id(mono2_prev_state)) {
+            auto call = id(mono_light2).turn_on();
+            call.set_brightness(id(mono2_prev_brightness));
+            call.perform();
+            ESP_LOGD("boot", "Restored Mono2 state: On - %s, Brightness - %.0f%%", id(mono2_prev_state) ? "Yes" : "No", id(mono2_prev_brightness) * 100);
+          } else {
+            ESP_LOGD("boot", "No saved Mono2 state, defaulting to off");
+          }
+          // Restore relays
+          if (id(fan_prev_state)) id(fan_relay).turn_on(); else id(fan_relay).turn_off();
+          if (id(desk1_prev_state)) id(desk1_relay).turn_on(); else id(desk1_relay).turn_off();
+          if (id(desk2_prev_state)) id(desk2_relay).turn_on(); else id(desk2_relay).turn_off();
+          if (id(plug_prev_state)) id(plug_relay).turn_on(); else id(plug_relay).turn_off();
+          if (id(driver12v_prev_state)) id(driver12v_relay).turn_on(); else id(driver12v_relay).turn_off();
+          if (id(switch_prev_state)) id(switch_relay).turn_on(); else id(switch_relay).turn_off();
+          if (id(ac_prev_state)) id(ac_relay).turn_on(); else id(ac_relay).turn_off();
+          // Restore auto relays
+          if (id(desk1_relay).state || id(desk2_relay).state) {
+            id(voltage_stabilizer_relay).turn_on();
+          } else {
+            id(voltage_stabilizer_relay).turn_off();
+          }
+          ESP_LOGD("boot", "Restored relays: Fan - %s, Desk1 - %s, Desk2 - %s, Plug - %s, 12V - %s, Switch - %s, AC - %s, Voltage - %s, CCT Driver - %s",
+            id(fan_relay).state ? "On" : "Off", id(desk1_relay).state ? "On" : "Off", id(desk2_relay).state ? "On" : "Off",
+            id(plug_relay).state ? "On" : "Off", id(driver12v_relay).state ? "On" : "Off", id(switch_relay).state ? "On" : "Off",
+            id(ac_relay).state ? "On" : "Off", id(voltage_stabilizer_relay).state ? "On" : "Off", id(cct_driver_relay).state ? "On" : "Off");
+
+preferences:
+  flash_write_interval: 0s  # Immediate NVS writes
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: "Studio Fallback"
+    password: !secret wifi_fallback_password
+  fast_connect: true
+
+api:
+  encryption:
+    key: "R4Xgxg+XJIHSuxXYUD/t1k03x7cKOVxqaNIS8VeyfUk="
+
+ota:
+  platform: esphome
+  password: !secret ota_password
+
+logger:
+
+web_server:
+  port: 80
+  version: 3
+  auth:
+    username: !secret web_username
+    password: !secret web_password
+
+captive_portal:
+
+i2c:
+  sda: 21
+  scl: 22
+
+pcf8574:
+  - id: pcf8575_hub
+    address: 0x20
+    pcf8575: true
+
+globals:
+  - id: cct_prev_state
+    type: bool
+    restore_value: yes
+  - id: cct_prev_brightness
+    type: float
+    restore_value: yes
+  - id: cct_prev_color_temp
+    type: float
+    restore_value: yes
+  - id: mono1_prev_state
+    type: bool
+    restore_value: yes
+  - id: mono1_prev_brightness
+    type: float
+    restore_value: yes
+  - id: mono2_prev_state
+    type: bool
+    restore_value: yes
+  - id: mono2_prev_brightness
+    type: float
+    restore_value: yes
+  - id: fan_prev_state
+    type: bool
+    restore_value: yes
+  - id: desk1_prev_state
+    type: bool
+    restore_value: yes
+  - id: desk2_prev_state
+    type: bool
+    restore_value: yes
+  - id: plug_prev_state
+    type: bool
+    restore_value: yes
+  - id: driver12v_prev_state
+    type: bool
+    restore_value: yes
+  - id: switch_prev_state
+    type: bool
+    restore_value: yes
+  - id: ac_prev_state
+    type: bool
+    restore_value: yes
+  - id: transition_duration
+    type: int
+    restore_value: yes
+    initial_value: '5'
+
+select:
+  - platform: template
+    name: "Transition Duration"
+    id: transition_select
+    options:
+      - "1"
+      - "3"
+      - "5"
+      - "10"
+    initial_option: "5"
+    set_action:
+      lambda: |-
+        id(transition_duration) = std::stoi(x);
+        ESP_LOGD("select", "Transition duration set to %d s", id(transition_duration));
+
+output:
+  - platform: ledc
+    id: warm_white_output
+    pin: GPIO5
+  - platform: ledc
+    id: cold_white_output
+    pin: GPIO12
+  - platform: ledc
+    id: mono1_output
+    pin: GPIO14
+  - platform: ledc
+    id: mono2_output
+    pin: GPIO15
+
+light:
+  - platform: cwww
+    id: office_cct_light
+    name: "Ceiling Lights"
+    cold_white: cold_white_output
+    warm_white: warm_white_output
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2700 K
+    constant_brightness: true
+    on_turn_on:
+      then:
+        - switch.turn_on: cct_driver_relay
+    on_turn_off:
+      then:
+        - switch.turn_off: cct_driver_relay
+    on_state:
+      then:
+        lambda: |-
+          auto state = id(office_cct_light).current_values;
+          id(cct_prev_state) = state.is_on();
+          id(cct_prev_brightness) = state.get_brightness();
+          id(cct_prev_color_temp) = state.get_color_temperature();
+          ESP_LOGD("light", "CCT state saved: On - %s, Brightness - %.0f%%, Temperature - %d K", id(cct_prev_state) ? "Yes" : "No", id(cct_prev_brightness) * 100, (int)(1000000.0 / id(cct_prev_color_temp)));
+  - platform: monochromatic
+    id: mono_light1
+    name: "Monochromatic Light 1"
+    output: mono1_output
+    on_state:
+      then:
+        lambda: |-
+          auto state = id(mono_light1).current_values;
+          id(mono1_prev_state) = state.is_on();
+          id(mono1_prev_brightness) = state.get_brightness();
+          ESP_LOGD("light", "Mono1 state saved: On - %s, Brightness - %.0f%%", id(mono1_prev_state) ? "Yes" : "No", id(mono1_prev_brightness) * 100);
+  - platform: monochromatic
+    id: mono_light2
+    name: "Monochromatic Light 2"
+    output: mono2_output
+    on_state:
+      then:
+        lambda: |-
+          auto state = id(mono_light2).current_values;
+          id(mono2_prev_state) = state.is_on();
+          id(mono2_prev_brightness) = state.get_brightness();
+          ESP_LOGD("light", "Mono2 state saved: On - %s, Brightness - %.0f%%", id(mono2_prev_state) ? "Yes" : "No", id(mono2_prev_brightness) * 100);
+
+switch:
+  - platform: gpio
+    id: fan_relay
+    name: "Fan"
+    pin:
+      number: GPIO33
+      inverted: true
+    on_turn_on:
+      then:
+        - lambda: |-
+            id(fan_prev_state) = true;
+            ESP_LOGD("switch", "Fan state saved: On");
+    on_turn_off:
+      then:
+        - lambda: |-
+            id(fan_prev_state) = false;
+            ESP_LOGD("switch", "Fan state saved: Off");
+  - platform: gpio
+    id: desk1_relay
+    name: "Desk1"
+    pin:
+      number: GPIO32
+      inverted: true
+    on_turn_on:
+      then:
+        - script.execute: voltage_stabilizer_auto
+        - lambda: |-
+            id(desk1_prev_state) = true;
+            ESP_LOGD("switch", "Desk1 state saved: On");
+    on_turn_off:
+      then:
+        - script.execute: voltage_stabilizer_auto
+        - lambda: |-
+            id(desk1_prev_state) = false;
+            ESP_LOGD("switch", "Desk1 state saved: Off");
+  - platform: gpio
+    id: desk2_relay
+    name: "Desk2"
+    pin:
+      number: GPIO27
+      inverted: true
+    on_turn_on:
+      then:
+        - script.execute: voltage_stabilizer_auto
+        - lambda: |-
+            id(desk2_prev_state) = true;
+            ESP_LOGD("switch", "Desk2 state saved: On");
+    on_turn_off:
+      then:
+        - script.execute: voltage_stabilizer_auto
+        - lambda: |-
+            id(desk2_prev_state) = false;
+            ESP_LOGD("switch", "Desk2 state saved: Off");
+  - platform: gpio
+    id: plug_relay
+    name: "16A Plug"
+    pin:
+      number: GPIO26
+      inverted: true
+    on_turn_on:
+      then:
+        - lambda: |-
+            id(plug_prev_state) = true;
+            ESP_LOGD("switch", "16A Plug state saved: On");
+    on_turn_off:
+      then:
+        - lambda: |-
+            id(plug_prev_state) = false;
+            ESP_LOGD("switch", "16A Plug state saved: Off");
+  - platform: gpio
+    id: driver12v_relay
+    name: "12V Driver"
+    pin:
+      number: GPIO23
+      inverted: true
+    on_turn_on:
+      then:
+        - lambda: |-
+            id(driver12v_prev_state) = true;
+            ESP_LOGD("switch", "12V Driver state saved: On");
+    on_turn_off:
+      then:
+        - lambda: |-
+            id(driver12v_prev_state) = false;
+            ESP_LOGD("switch", "12V Driver state saved: Off");
+  - platform: gpio
+    id: switch_relay
+    name: "Switch"
+    pin:
+      number: GPIO19
+      inverted: true
+    on_turn_on:
+      then:
+        - lambda: |-
+            id(switch_prev_state) = true;
+            ESP_LOGD("switch", "Switch state saved: On");
+    on_turn_off:
+      then:
+        - lambda: |-
+            id(switch_prev_state) = false;
+            ESP_LOGD("switch", "Switch state saved: Off");
+  - platform: gpio
+    id: ac_relay
+    name: "AC"
+    pin:
+      number: GPIO13
+      inverted: true
+    on_turn_on:
+      then:
+        - lambda: |-
+            id(ac_prev_state) = true;
+            ESP_LOGD("switch", "AC state saved: On");
+    on_turn_off:
+      then:
+        - lambda: |-
+            id(ac_prev_state) = false;
+            ESP_LOGD("light", "AC state saved: Off");
+  - platform: gpio
+    id: voltage_stabilizer_relay
+    name: "Voltage Stabilizer"
+    pin:
+      number: GPIO18
+      inverted: true
+  - platform: gpio
+    id: cct_driver_relay
+    name: "CCT Lights Driver"
+    pin:
+      number: GPIO25
+      inverted: true
+
+binary_sensor:
+  - platform: gpio
+    id: fan_touch
+    name: "Fan Touch"
+    pin:
+      pcf8574: pcf8575_hub
+      number: 0
+      mode:
+        input: true
+    on_press:
+      then:
+        - switch.toggle: fan_relay
+  - platform: gpio
+    id: desk1_touch
+    name: "Desk1 Touch"
+    pin:
+      pcf8574: pcf8575_hub
+      number: 1
+      mode:
+        input: true
+    on_press:
+      then:
+        - switch.toggle: desk1_relay
+  - platform: gpio
+    id: desk2_touch
+    name: "Desk2 Touch"
+    pin:
+      pcf8574: pcf8575_hub
+      number: 2
+      mode:
+        input: true
+    on_press:
+      then:
+        - switch.toggle: desk2_relay
+  - platform: gpio
+    id: ceiling_touch
+    name: "Ceiling Lights Touch"
+    pin:
+      pcf8574: pcf8575_hub
+      number: 3
+      mode:
+        input: true
+    on_press:
+      then:
+        - light.toggle: office_cct_light
+  - platform: gpio
+    id: mono1_touch
+    name: "Monochromatic Light 1 Touch"
+    pin:
+      pcf8574: pcf8575_hub
+      number: 4
+      mode:
+        input: true
+    on_press:
+      then:
+        - light.toggle: mono_light1
+  - platform: gpio
+    id: mono2_touch
+    name: "Monochromatic Light 2 Touch"
+    pin:
+      pcf8574: pcf8575_hub
+      number: 5
+      mode:
+        input: true
+    on_press:
+      then:
+        - light.toggle: mono_light2
+  - platform: status
+    id: ha_connection_status
+    name: "HA Connection Status"
+
+text_sensor:
+  - platform: template
+    name: "Touch States"
+    lambda: |-
+      return std::string("Fan Touch: ") + (id(fan_touch).state ? "High" : "Low") + "\n" +
+             std::string("Desk1 Touch: ") + (id(desk1_touch).state ? "High" : "Low") + "\n" +
+             std::string("Desk2 Touch: ") + (id(desk2_touch).state ? "High" : "Low") + "\n" +
+             std::string("Ceiling Lights Touch: ") + (id(ceiling_touch).state ? "High" : "Low") + "\n" +
+             std::string("Mono1 Touch: ") + (id(mono1_touch).state ? "High" : "Low") + "\n" +
+             std::string("Mono2 Touch: ") + (id(mono2_touch).state ? "High" : "Low");
+  - platform: template
+    name: "System Info"
+    # lambda: |-
+    #   return std::string("HA Connection: ") + (id(ha_connection_status).state ? "Connected" : "Not Connected") + "\n" +
+    #          std::string("Web Server IP: ") + WiFi.localIP().toString().c_str();
+
+
+    # # Line ~439 area, replace your lambda body with:
+    # lambda: |-
+    #   return std::string("Web Server IP: ") + network::get_ip_address().str().c_str();
+
+script:
+  - id: cct_driver_auto
+    then:
+      - if:
+          condition:
+            light.is_on: office_cct_light
+          then:
+            - switch.turn_on: cct_driver_relay
+          else:
+            - switch.turn_off: cct_driver_relay
+  - id: voltage_stabilizer_auto
+    then:
+      - if:
+          condition:
+            or:
+              - switch.is_on: desk1_relay
+              - switch.is_on: desk2_relay
+          then:
+            - switch.turn_on: voltage_stabilizer_relay
+          else:
+            - switch.turn_off: voltage_stabilizer_relay

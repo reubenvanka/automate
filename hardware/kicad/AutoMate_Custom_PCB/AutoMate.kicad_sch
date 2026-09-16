@@ -8337,10 +8337,6 @@
 		(uuid "089e83ff-55d6-415b-9e8e-50fb9228ba10")
 	)
 	(no_connect
-		(at 180.34 109.22)
-		(uuid "0938fd48-c1c4-4b89-8759-af198270c0e2")
-	)
-	(no_connect
 		(at 50.8 265.43)
 		(uuid "0e366445-128a-4872-b9c0-76e500bbfe50")
 	)
@@ -8355,6 +8351,10 @@
 	(no_connect
 		(at 91.44 240.03)
 		(uuid "332c6156-05de-49aa-8a15-c60fb23ef627")
+	)
+	(no_connect
+		(at 180.34 106.68)
+		(uuid "51fd1f69-bb3e-4572-aaca-641dc5c0ba6a")
 	)
 	(no_connect
 		(at 193.04 243.84)
@@ -8393,6 +8393,10 @@
 		(uuid "a995412e-4b20-4a4c-b750-3dd6609c4a84")
 	)
 	(no_connect
+		(at 180.34 96.52)
+		(uuid "aa3e04ec-3606-4c96-9088-b347f057bac5")
+	)
+	(no_connect
 		(at 426.72 22.86)
 		(uuid "ace5c517-959a-45f5-93bf-9efcabd21f69")
 	)
@@ -8409,8 +8413,8 @@
 		(uuid "ba446fe9-2a19-4a5e-a319-19bad1b937f3")
 	)
 	(no_connect
-		(at 180.34 99.06)
-		(uuid "c6a4e95d-06e1-4959-8b2f-ae4c1cbc75f1")
+		(at 190.5 85.09)
+		(uuid "c215f415-df0a-41a6-808c-a75057399332")
 	)
 	(no_connect
 		(at 170.18 228.6)
@@ -9750,30 +9754,6 @@
 			)
 		)
 	)
-	(global_label "I2C_SDA"
-		(shape input)
-		(at 180.34 104.14 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "10f01baa-f38d-4392-ab38-030b1394678a")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 169.7348 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-	)
 	(global_label "PSL"
 		(shape input)
 		(at 76.2 25.4 270)
@@ -10830,6 +10810,30 @@
 			)
 		)
 	)
+	(global_label "I2C_SCL"
+		(shape input)
+		(at 180.34 104.14 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "4ff3f7be-e9e1-4e76-812d-0c5201e0197a")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 169.7953 104.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+	)
 	(global_label "M3B"
 		(shape input)
 		(at 292.1 132.08 270)
@@ -11694,30 +11698,6 @@
 			)
 		)
 	)
-	(global_label "I2C_SCL"
-		(shape input)
-		(at 180.34 101.6 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "971513cb-fdb7-40da-a3b5-0f66d07a3b3d")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 169.7953 101.6 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-	)
 	(global_label "MONITOR4_BACKLIGHT"
 		(shape input)
 		(at 320.04 160.02 270)
@@ -11803,6 +11783,30 @@
 		(uuid "a15992af-0618-4980-8f9f-1773a2319c20")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 342.9 107.3672 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+	)
+	(global_label "I2C_SDA"
+		(shape input)
+		(at 180.34 101.6 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "a580a5c0-7ae2-4922-9a77-f728df49a317")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 169.7348 101.6 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18126,85 +18130,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+5V")
-		(at 180.34 106.68 90)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "5afe612f-ab01-49ab-87a9-0daec097e4df")
-		(property "Reference" "#PWR020"
-			(at 184.15 106.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "+5V"
-			(at 176.53 106.6799 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 180.34 106.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 180.34 106.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 180.34 106.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "7ee4a2f3-7457-4bd3-bf74-0b86fd1afdd6")
-		)
-		(instances
-			(project "AutoMate"
-				(path "/6e78f634-a06d-4f9f-a273-756e182159e5"
-					(reference "#PWR020")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_name "Dual MOSFET Trigger Switch Module_1")
 		(lib_id "D4184 V1.0:Dual MOSFET Trigger Switch Module")
 		(at 387.35 78.74 90)
@@ -19782,6 +19707,85 @@
 			(project "AutoMate"
 				(path "/6e78f634-a06d-4f9f-a273-756e182159e5"
 					(reference "#PWR096")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 180.34 99.06 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6fba3e90-8511-44b5-9d1a-085f6663589e")
+		(property "Reference" "#PWR020"
+			(at 184.15 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+5V"
+			(at 176.53 99.0599 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 180.34 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 180.34 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 180.34 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "60c60035-b9c8-4241-8010-03ff4917c78d")
+		)
+		(instances
+			(project "AutoMate"
+				(path "/6e78f634-a06d-4f9f-a273-756e182159e5"
+					(reference "#PWR020")
 					(unit 1)
 				)
 			)
@@ -28264,7 +28268,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Horizontal"
 			(at 185.42 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -28326,7 +28330,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 180.34 96.52 270)
+		(at 180.34 109.22 270)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -28334,9 +28338,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "eeceda97-5dc9-455d-b327-ff08e3f6f40b")
+		(uuid "f1a8cb8e-b398-4d47-8183-af8ca6006b57")
 		(property "Reference" "#PWR012"
-			(at 173.99 96.52 0)
+			(at 173.99 109.22 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -28347,7 +28351,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 175.26 96.52 0)
+			(at 175.26 109.22 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -28357,7 +28361,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 180.34 96.52 0)
+			(at 180.34 109.22 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -28368,7 +28372,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 180.34 96.52 0)
+			(at 180.34 109.22 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -28379,7 +28383,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 180.34 96.52 0)
+			(at 180.34 109.22 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -28390,7 +28394,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "b48882e5-ad7a-4265-9242-165018f6757b")
+			(uuid "3c8ac0fc-4d21-45d9-a189-918aed0fb902")
 		)
 		(instances
 			(project "AutoMate"

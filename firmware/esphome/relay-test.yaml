@@ -1,0 +1,136 @@
+# AutoMate — 74HC595 relay bench test (standalone)
+# -----------------------------------------------------
+# Purpose: verify ONLY the 74HC595 shift register + 8-ch relay board.
+# Does NOT use WiFi / API / packages — run over USB serial.
+#
+#   Flash:  cd firmware/esphome && esphome run relay-test.yaml
+#   Watch:  open the serial logger (`esphome logs relay-test.yaml`)
+#           Each channel Q0..Q7 should energise in turn for ~1s
+#           (you should hear/see 8 distinct relay clicks + the on-board
+#           status LED blink on each).
+#
+# Wiring (must match boards):
+#   74HC595  SER   -> GPIO0
+#   74HC595  SRCLK -> GPIO23
+#   74HC595  RCLK  -> GPIO15
+#   (SRCLR -> +3.3V via 10k, OE -> GND, VCC -> 3.3V, GND -> GND)
+#   74HC595 Q0..Q7 -> Relay Module IN1..IN8 (active-LOW, direct connection)
+#
+# Relays are wired as `inverted: true` matching active-LOW module:
+#   switch ON -> register bit 0 -> 74HC595 Q LOW -> Relay ON
+#   switch OFF -> register bit 1 -> 74HC595 Q HIGH -> Relay OFF
+
+esphome:
+  name: relay-test
+  friendly_name: Relay Test
+  on_boot:
+    then:
+      - logger.log: "74HC595 relay test starting (Q0..Q7)..."
+      - delay: 500ms
+      - output.turn_on: relay_0
+      - script.execute: blink_status
+      - logger.log: "Q0 ON — if no click, shift register is not latching"
+      - delay: 1000ms
+      - output.turn_off: relay_0
+      - delay: 300ms
+      - output.turn_on: relay_1
+      - script.execute: blink_status
+      - logger.log: "Q1 ON"
+      - delay: 1000ms
+      - output.turn_off: relay_1
+      - delay: 300ms
+      - output.turn_on: relay_2
+      - script.execute: blink_status
+      - logger.log: "Q2 ON"
+      - delay: 1000ms
+      - output.turn_off: relay_2
+      - delay: 300ms
+      - output.turn_on: relay_3
+      - script.execute: blink_status
+      - logger.log: "Q3 ON"
+      - delay: 1000ms
+      - output.turn_off: relay_3
+      - delay: 300ms
+      - output.turn_on: relay_4
+      - script.execute: blink_status
+      - logger.log: "Q4 ON"
+      - delay: 1000ms
+      - output.turn_off: relay_4
+      - delay: 300ms
+      - output.turn_on: relay_5
+      - script.execute: blink_status
+      - logger.log: "Q5 ON"
+      - delay: 1000ms
+      - output.turn_off: relay_5
+      - delay: 300ms
+      - output.turn_on: relay_6
+      - script.execute: blink_status
+      - logger.log: "Q6 ON"
+      - delay: 1000ms
+      - output.turn_off: relay_6
+      - delay: 300ms
+      - output.turn_on: relay_7
+      - script.execute: blink_status
+      - logger.log: "Q7 ON"
+      - delay: 1000ms
+      - output.turn_off: relay_7
+      - delay: 300ms
+      - logger.log: "74HC595 relay test complete. All 8 channels exercised."
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+logger:
+  baud_rate: 115200
+
+# 74HC595 on the verified pins
+sn74hc595:
+  - id: sr_relays
+    data_pin: GPIO0
+    clock_pin: GPIO23
+    latch_pin: GPIO15
+    sr_count: 1
+
+# On-board status LED (blinks per channel so you can follow along)
+output:
+  - platform: gpio
+    id: status_led
+    pin:
+      number: GPIO2
+      inverted: false   # active-HIGH on this DevKit
+
+# 8 relay outputs -> Q0..Q7 (all active-LOW, hence inverted: true)
+  - platform: gpio
+    id: relay_0
+    pin: { sn74hc595: sr_relays, number: 0, inverted: true }
+  - platform: gpio
+    id: relay_1
+    pin: { sn74hc595: sr_relays, number: 1, inverted: true }
+  - platform: gpio
+    id: relay_2
+    pin: { sn74hc595: sr_relays, number: 2, inverted: true }
+  - platform: gpio
+    id: relay_3
+    pin: { sn74hc595: sr_relays, number: 3, inverted: true }
+  - platform: gpio
+    id: relay_4
+    pin: { sn74hc595: sr_relays, number: 4, inverted: true }
+  - platform: gpio
+    id: relay_5
+    pin: { sn74hc595: sr_relays, number: 5, inverted: true }
+  - platform: gpio
+    id: relay_6
+    pin: { sn74hc595: sr_relays, number: 6, inverted: true }
+  - platform: gpio
+    id: relay_7
+    pin: { sn74hc595: sr_relays, number: 7, inverted: true }
+
+# Blink helper
+script:
+  - id: blink_status
+    then:
+      - output.turn_on: status_led
+      - delay: 100ms
+      - output.turn_off: status_led

@@ -89,113 +89,305 @@ output:
 light:
   - platform: monochromatic
     id: light_monitor1_backlight
-    name: "Monitor 1 Backlight"
+    name: "Monitor1 Backlight"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_monitor1_backlight
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_monitor1_backlight).current_values;
+            id(monitor1_backlight_prev_state) = state.is_on();
+            id(monitor1_backlight_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Monitor1 Backlight state saved: On - %s, Brightness - %.0f%%", id(monitor1_backlight_prev_state) ? "Yes" : "No", id(monitor1_backlight_prev_brightness) * 100);
   - platform: monochromatic
     id: light_desk_light1
-    name: "Desk Light 1"
+    name: "Desk Light1"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_desk_light1
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_desk_light1).current_values;
+            id(desk_light1_prev_state) = state.is_on();
+            id(desk_light1_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Desk Light1 state saved: On - %s, Brightness - %.0f%%", id(desk_light1_prev_state) ? "Yes" : "No", id(desk_light1_prev_brightness) * 100);
   - platform: monochromatic
     id: light_table_light
     name: "Table Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_table_light
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_table_light).current_values;
+            id(table_light_prev_state) = state.is_on();
+            id(table_light_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Table Light state saved: On - %s, Brightness - %.0f%%", id(table_light_prev_state) ? "Yes" : "No", id(table_light_prev_brightness) * 100);
   - platform: monochromatic
     id: light_shelf_light1
-    name: "Shelf Light 1"
+    name: "Shelf Light1"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_shelf_light1
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_shelf_light1).current_values;
+            id(shelf_light1_prev_state) = state.is_on();
+            id(shelf_light1_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Shelf Light1 state saved: On - %s, Brightness - %.0f%%", id(shelf_light1_prev_state) ? "Yes" : "No", id(shelf_light1_prev_brightness) * 100);
   - platform: monochromatic
     id: light_monitor2_backlight
-    name: "Monitor 2 Backlight"
+    name: "Monitor2 Backlight"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_monitor2_backlight
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_monitor2_backlight).current_values;
+            id(monitor2_backlight_prev_state) = state.is_on();
+            id(monitor2_backlight_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Monitor2 Backlight state saved: On - %s, Brightness - %.0f%%", id(monitor2_backlight_prev_state) ? "Yes" : "No", id(monitor2_backlight_prev_brightness) * 100);
   - platform: monochromatic
     id: light_desk_light2
-    name: "Desk Light 2"
+    name: "Desk Light2"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_desk_light2
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_desk_light2).current_values;
+            id(desk_light2_prev_state) = state.is_on();
+            id(desk_light2_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Desk Light2 state saved: On - %s, Brightness - %.0f%%", id(desk_light2_prev_state) ? "Yes" : "No", id(desk_light2_prev_brightness) * 100);
   - platform: monochromatic
     id: light_shelf_light2
-    name: "Shelf Light 2"
+    name: "Shelf Light2"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_shelf_light2
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_shelf_light2).current_values;
+            id(shelf_light2_prev_state) = state.is_on();
+            id(shelf_light2_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Shelf Light2 state saved: On - %s, Brightness - %.0f%%", id(shelf_light2_prev_state) ? "Yes" : "No", id(shelf_light2_prev_brightness) * 100);
   - platform: monochromatic
     id: light_cupboard_bounce
     name: "Cupboard Bounce Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_cupboard_bounce_light
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_cupboard_bounce).current_values;
+            id(cupboard_bounce_prev_state) = state.is_on();
+            id(cupboard_bounce_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Cupboard Bounce Light state saved: On - %s, Brightness - %.0f%%", id(cupboard_bounce_prev_state) ? "Yes" : "No", id(cupboard_bounce_prev_brightness) * 100);
   - platform: monochromatic
     id: light_cupboard_spot
     name: "Cupboard Spot Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_cupboard_spot_light
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_cupboard_spot).current_values;
+            id(cupboard_spot_prev_state) = state.is_on();
+            id(cupboard_spot_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Cupboard Spot Light state saved: On - %s, Brightness - %.0f%%", id(cupboard_spot_prev_state) ? "Yes" : "No", id(cupboard_spot_prev_brightness) * 100);
   - platform: monochromatic
     id: light_door_spot
-    name: "Door Spot Light"
+    name: "Door Spot"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_door_spot_light
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_door_spot).current_values;
+            id(door_spot_prev_state) = state.is_on();
+            id(door_spot_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Door Spot state saved: On - %s, Brightness - %.0f%%", id(door_spot_prev_state) ? "Yes" : "No", id(door_spot_prev_brightness) * 100);
   - platform: monochromatic
     id: light_monitor3_backlight
-    name: "Monitor 3 Backlight"
+    name: "Monitor3 Backlight"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_monitor3_backlight
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_monitor3_backlight).current_values;
+            id(monitor3_backlight_prev_state) = state.is_on();
+            id(monitor3_backlight_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Monitor3 Backlight state saved: On - %s, Brightness - %.0f%%", id(monitor3_backlight_prev_state) ? "Yes" : "No", id(monitor3_backlight_prev_brightness) * 100);
   - platform: monochromatic
     id: light_monitor4_backlight
-    name: "Monitor 4 Backlight"
+    name: "Monitor4 Backlight"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_monitor4_backlight
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_monitor4_backlight).current_values;
+            id(monitor4_backlight_prev_state) = state.is_on();
+            id(monitor4_backlight_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Monitor4 Backlight state saved: On - %s, Brightness - %.0f%%", id(monitor4_backlight_prev_state) ? "Yes" : "No", id(monitor4_backlight_prev_brightness) * 100);
   - platform: monochromatic
     id: light_exhaust_fans
     name: "Exhaust Fans"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_exhaust_fans
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_exhaust_fans).current_values;
+            id(exhaust_fans_prev_state) = state.is_on();
+            id(exhaust_fans_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Exhaust Fans state saved: On - %s, Brightness - %.0f%%", id(exhaust_fans_prev_state) ? "Yes" : "No", id(exhaust_fans_prev_brightness) * 100);
   - platform: monochromatic
     id: light_terrace_ambient
     name: "Terrace Ambient Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_terrace_ambient_light
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_terrace_ambient).current_values;
+            id(terrace_ambient_prev_state) = state.is_on();
+            id(terrace_ambient_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Terrace Ambient Light state saved: On - %s, Brightness - %.0f%%", id(terrace_ambient_prev_state) ? "Yes" : "No", id(terrace_ambient_prev_brightness) * 100);
   - platform: monochromatic
     id: light_backup_01
-    name: "BACKUP_01"
+    name: "Backup 01"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_backup_01
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_backup_01).current_values;
+            id(backup_01_prev_state) = state.is_on();
+            id(backup_01_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Backup 01 state saved: On - %s, Brightness - %.0f%%", id(backup_01_prev_state) ? "Yes" : "No", id(backup_01_prev_brightness) * 100);
   - platform: monochromatic
     id: light_backup_02
-    name: "BACKUP_02"
+    name: "Backup 02"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_backup_02
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_backup_02).current_values;
+            id(backup_02_prev_state) = state.is_on();
+            id(backup_02_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Backup 02 state saved: On - %s, Brightness - %.0f%%", id(backup_02_prev_state) ? "Yes" : "No", id(backup_02_prev_brightness) * 100);

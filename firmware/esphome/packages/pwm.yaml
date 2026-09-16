@@ -20,6 +20,207 @@
 #   GPIO20/23/24 = 74HC595; GPIO2 = on-board LED; GPIO32 = 30A relay.
 # All remaining single-channel outputs route through PCA9685 (packages/pca9685.yaml).
 
+# Global variables for light state persistence (restored on boot)
+globals:
+  - id: ceiling_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: ceiling_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: ceiling_prev_color_temp
+    type: float
+    restore_value: yes
+    initial_value: '370'
+  - id: desk1_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: desk1_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: desk1_prev_color_temp
+    type: float
+    restore_value: yes
+    initial_value: '370'
+  - id: desk2_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: desk2_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: desk2_prev_color_temp
+    type: float
+    restore_value: yes
+    initial_value: '370'
+  - id: photo_spot_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: photo_spot_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: wall_bounce_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: wall_bounce_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: terrace_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: terrace_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: washroom_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: washroom_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+
+
+  - id: monitor1_backlight_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: monitor1_backlight_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: desk_light1_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: desk_light1_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: table_light_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: table_light_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: shelf_light1_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: shelf_light1_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: monitor2_backlight_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: monitor2_backlight_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: desk_light2_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: desk_light2_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: shelf_light2_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: shelf_light2_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: cupboard_bounce_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: cupboard_bounce_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: cupboard_spot_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: cupboard_spot_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: door_spot_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: door_spot_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: monitor3_backlight_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: monitor3_backlight_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: monitor4_backlight_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: monitor4_backlight_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: exhaust_fans_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: exhaust_fans_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: terrace_ambient_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: terrace_ambient_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: backup_01_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: backup_01_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+  - id: backup_02_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: backup_02_prev_brightness
+    type: float
+    restore_value: yes
+    initial_value: '1.0'
+
 output:
   - platform: ledc
     id: output_ceiling_warm
@@ -80,8 +281,22 @@ light:
     warm_white: output_ceiling_warm
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2500 K
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_ceiling_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - switch.turn_off: relay_ceiling_driver
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_ceiling).current_values;
+            id(ceiling_prev_state) = state.is_on();
+            id(ceiling_prev_brightness) = state.get_brightness();
+            id(ceiling_prev_color_temp) = state.get_color_temperature();
+            ESP_LOGD("light", "Ceiling state saved: On - %s, Brightness - %.0f%%, Temperature - %d K", id(ceiling_prev_state) ? "Yes" : "No", id(ceiling_prev_brightness) * 100, (int)(1000000.0 / id(ceiling_prev_color_temp)));
 
   - platform: cwww
     id: light_desk1
@@ -91,8 +306,21 @@ light:
     warm_white: output_desk1_warm
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2500 K
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_desk1).current_values;
+            id(desk1_prev_state) = state.is_on();
+            id(desk1_prev_brightness) = state.get_brightness();
+            id(desk1_prev_color_temp) = state.get_color_temperature();
+            ESP_LOGD("light", "Desk1 state saved: On - %s, Brightness - %.0f%%, Temperature - %d K", id(desk1_prev_state) ? "Yes" : "No", id(desk1_prev_brightness) * 100, (int)(1000000.0 / id(desk1_prev_color_temp)));
 
   - platform: cwww
     id: light_desk2
@@ -102,37 +330,98 @@ light:
     warm_white: output_desk2_warm
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2500 K
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_desk2).current_values;
+            id(desk2_prev_state) = state.is_on();
+            id(desk2_prev_brightness) = state.get_brightness();
+            id(desk2_prev_color_temp) = state.get_color_temperature();
+            ESP_LOGD("light", "Desk2 state saved: On - %s, Brightness - %.0f%%, Temperature - %d K", id(desk2_prev_state) ? "Yes" : "No", id(desk2_prev_brightness) * 100, (int)(1000000.0 / id(desk2_prev_color_temp)));
 
   - platform: monochromatic
     id: light_photo_spot
     name: "Photo Spot Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_photo_spot_light
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_photo_spot).current_values;
+            id(photo_spot_prev_state) = state.is_on();
+            id(photo_spot_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Photo Spot state saved: On - %s, Brightness - %.0f%%", id(photo_spot_prev_state) ? "Yes" : "No", id(photo_spot_prev_brightness) * 100);
 
   - platform: monochromatic
     id: light_wall_bounce
     name: "Wall Bounce Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_wall_bounce_light
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_wall_bounce).current_values;
+            id(wall_bounce_prev_state) = state.is_on();
+            id(wall_bounce_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Wall Bounce state saved: On - %s, Brightness - %.0f%%", id(wall_bounce_prev_state) ? "Yes" : "No", id(wall_bounce_prev_brightness) * 100);
 
   - platform: monochromatic
     id: light_terrace
     name: "Terrace Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_terrace_light
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_terrace).current_values;
+            id(terrace_prev_state) = state.is_on();
+            id(terrace_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Terrace state saved: On - %s, Brightness - %.0f%%", id(terrace_prev_state) ? "Yes" : "No", id(terrace_prev_brightness) * 100);
 
   - platform: monochromatic
     id: light_washroom
     name: "Washroom Light"
     restore_mode: RESTORE_DEFAULT_OFF
     output: output_washroom_light
+    on_turn_on:
+      then:
+        - switch.turn_on: relay_12v_driver
+        - script.execute: blink_led
+    on_turn_off:
+      then:
+        - script.execute: blink_led
     on_state:
-      - script.execute: blink_led
+      then:
+        - lambda: |-
+            auto state = id(light_washroom).current_values;
+            id(washroom_prev_state) = state.is_on();
+            id(washroom_prev_brightness) = state.get_brightness();
+            ESP_LOGD("light", "Washroom state saved: On - %s, Brightness - %.0f%%", id(washroom_prev_state) ? "Yes" : "No", id(washroom_prev_brightness) * 100);

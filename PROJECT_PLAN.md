@@ -4,6 +4,7 @@
 
 - Establish product repository, source-of-truth specification, AI context, rules, traceability, gates, and secret-safe ignore policy.
 - Confirm product name and repository slug.
+- **Hardware decision: 74HC595 + ULN2803 Darlington driver + manual dip-switch override (selected)**
 
 **Exit evidence:** Clean repository inspection and initial commit.
 
