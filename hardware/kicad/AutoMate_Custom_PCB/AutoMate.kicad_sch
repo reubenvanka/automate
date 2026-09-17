@@ -8307,6 +8307,12 @@
 		(uuid "46891897-11f4-4e29-87d9-c6bedf1d5b9e")
 	)
 	(junction
+		(at 184.15 194.31)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4d5916a5-a060-4d46-880a-517160851958")
+	)
+	(junction
 		(at 86.36 100.33)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8329,6 +8335,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5f6ba022-dd6d-41bf-b9e2-cfe1f417bebf")
+	)
+	(junction
+		(at 184.15 208.28)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "665abb65-6cd0-47d1-8b66-f66d85875f9b")
 	)
 	(junction
 		(at 109.22 180.34)
@@ -8808,6 +8820,16 @@
 	)
 	(wire
 		(pts
+			(xy 184.15 208.28) (xy 193.04 208.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "22ccffc8-df00-404c-af91-1feb99452f18")
+	)
+	(wire
+		(pts
 			(xy 161.29 274.32) (xy 161.29 275.59)
 		)
 		(stroke
@@ -8998,7 +9020,7 @@
 	)
 	(wire
 		(pts
-			(xy 184.15 204.47) (xy 193.04 204.47)
+			(xy 168.91 208.28) (xy 184.15 208.28)
 		)
 		(stroke
 			(width 0)
@@ -9128,13 +9150,23 @@
 	)
 	(wire
 		(pts
-			(xy 176.53 194.31) (xy 193.04 194.31)
+			(xy 176.53 194.31) (xy 184.15 194.31)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "55b2ea23-55e0-4a26-9abc-6d47ef3aad5f")
+	)
+	(wire
+		(pts
+			(xy 184.15 204.47) (xy 184.15 208.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "570f36c3-9dd5-4677-b853-31fd1572fa1b")
 	)
 	(wire
 		(pts
@@ -9288,6 +9320,16 @@
 	)
 	(wire
 		(pts
+			(xy 184.15 194.31) (xy 193.04 194.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7708708a-51c0-40ee-8940-60e955949944")
+	)
+	(wire
+		(pts
 			(xy 154.94 184.15) (xy 167.64 184.15)
 		)
 		(stroke
@@ -9378,6 +9420,16 @@
 	)
 	(wire
 		(pts
+			(xy 184.15 194.31) (xy 184.15 196.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "91ec2543-d95d-4011-8115-7c70c7eff927")
+	)
+	(wire
+		(pts
 			(xy 146.05 257.81) (xy 146.05 260.35)
 		)
 		(stroke
@@ -9388,7 +9440,7 @@
 	)
 	(wire
 		(pts
-			(xy 193.04 204.47) (xy 193.04 196.85)
+			(xy 193.04 208.28) (xy 193.04 196.85)
 		)
 		(stroke
 			(width 0)
@@ -11710,7 +11762,7 @@
 	)
 	(global_label "ZMCT103C_CURRENT"
 		(shape input)
-		(at 184.15 204.47 180)
+		(at 168.91 208.28 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11720,7 +11772,7 @@
 		)
 		(uuid "7f374106-4acb-4f51-9e12-99be9831974c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 161.8126 204.47 0)
+			(at 146.5726 208.28 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20221,6 +20273,88 @@
 			(project "AutoMate"
 				(path "/6e78f634-a06d-4f9f-a273-756e182159e5"
 					(reference "#PWR020")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 184.15 200.66 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "701145d5-f7a7-478b-9eae-69a3088e3c5b")
+		(property "Reference" "BurdenResistor"
+			(at 186.69 199.3899 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "R"
+			(at 186.69 201.9299 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P5.08mm_Vertical"
+			(at 182.372 200.66 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 184.15 200.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 184.15 200.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "50d1521d-ffdf-45bb-960a-8e38b528190a")
+		)
+		(pin "1"
+			(uuid "95a5f531-bd4a-4a10-85e5-3cfdc369c827")
+		)
+		(instances
+			(project "AutoMate"
+				(path "/6e78f634-a06d-4f9f-a273-756e182159e5"
+					(reference "BurdenResistor")
 					(unit 1)
 				)
 			)
