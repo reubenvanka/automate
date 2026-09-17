@@ -237,8 +237,10 @@ switch:
     lambda: 'return id(relay_desk1).state;'
     turn_on_action:
       - switch.turn_on: relay_desk1
+      - script.execute: increment_desk_users
     turn_off_action:
       - switch.turn_off: relay_desk1
+      - script.execute: decrement_desk_users
 
   - platform: template
     id: switch_desk2
@@ -248,8 +250,10 @@ switch:
     lambda: 'return id(relay_desk2).state;'
     turn_on_action:
       - switch.turn_on: relay_desk2
+      - script.execute: increment_desk_users
     turn_off_action:
       - switch.turn_off: relay_desk2
+      - script.execute: decrement_desk_users
 
   - platform: template
     id: switch_desk3
@@ -259,8 +263,10 @@ switch:
     lambda: 'return id(relay_desk3).state;'
     turn_on_action:
       - switch.turn_on: relay_desk3
+      - script.execute: increment_desk_users
     turn_off_action:
       - switch.turn_off: relay_desk3
+      - script.execute: decrement_desk_users
 
   - platform: template
     id: switch_16a
