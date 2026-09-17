@@ -94,7 +94,7 @@ light:
     output: output_monitor1_backlight
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -113,7 +113,7 @@ light:
     output: output_desk_light1
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -132,7 +132,7 @@ light:
     output: output_table_light
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -151,7 +151,7 @@ light:
     output: output_shelf_light1
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -170,7 +170,7 @@ light:
     output: output_monitor2_backlight
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -189,7 +189,7 @@ light:
     output: output_desk_light2
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -208,7 +208,7 @@ light:
     output: output_shelf_light2
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -227,7 +227,7 @@ light:
     output: output_cupboard_bounce_light
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -246,7 +246,7 @@ light:
     output: output_cupboard_spot_light
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -265,7 +265,7 @@ light:
     output: output_door_spot_light
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -284,7 +284,7 @@ light:
     output: output_monitor3_backlight
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -303,7 +303,7 @@ light:
     output: output_monitor4_backlight
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -322,7 +322,7 @@ light:
     output: output_exhaust_fans
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -341,7 +341,7 @@ light:
     output: output_terrace_ambient_light
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -360,7 +360,7 @@ light:
     output: output_backup_01
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:
@@ -379,7 +379,7 @@ light:
     output: output_backup_02
     on_turn_on:
       then:
-        - switch.turn_on: relay_12v_driver
+        - script.execute: increment_12v_users
         - script.execute: blink_led
     on_turn_off:
       then:

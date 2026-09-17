@@ -308,10 +308,11 @@ light:
     warm_white_color_temperature: 2500 K
     on_turn_on:
       then:
-        - script.execute: turn_on_12v_driver
+        - switch.turn_on: relay_ceiling_driver
         - script.execute: blink_led
     on_turn_off:
       then:
+        - switch.turn_off: relay_ceiling_driver
         - script.execute: blink_led
     on_state:
       then:
@@ -332,10 +333,11 @@ light:
     warm_white_color_temperature: 2500 K
     on_turn_on:
       then:
-        - script.execute: turn_on_12v_driver
+        - switch.turn_on: relay_ceiling_driver
         - script.execute: blink_led
     on_turn_off:
       then:
+        - switch.turn_off: relay_ceiling_driver
         - script.execute: blink_led
     on_state:
       then:
@@ -353,10 +355,11 @@ light:
     output: output_photo_spot_light
     on_turn_on:
       then:
-        - script.execute: turn_on_12v_driver
+        - switch.turn_on: relay_ceiling_driver
         - script.execute: blink_led
     on_turn_off:
       then:
+        - switch.turn_off: relay_ceiling_driver
         - script.execute: blink_led
     on_state:
       then:
@@ -373,10 +376,11 @@ light:
     output: output_wall_bounce_light
     on_turn_on:
       then:
-        - script.execute: turn_on_12v_driver
+        - switch.turn_on: relay_ceiling_driver
         - script.execute: blink_led
     on_turn_off:
       then:
+        - switch.turn_off: relay_ceiling_driver
         - script.execute: blink_led
     on_state:
       then:
@@ -393,10 +397,11 @@ light:
     output: output_terrace_light
     on_turn_on:
       then:
-        - script.execute: turn_on_12v_driver
+        - switch.turn_on: relay_ceiling_driver
         - script.execute: blink_led
     on_turn_off:
       then:
+        - switch.turn_off: relay_ceiling_driver
         - script.execute: blink_led
     on_state:
       then:
@@ -413,10 +418,11 @@ light:
     output: output_washroom_light
     on_turn_on:
       then:
-        - script.execute: turn_on_12v_driver
+        - switch.turn_on: relay_ceiling_driver
         - script.execute: blink_led
     on_turn_off:
       then:
+        - switch.turn_off: relay_ceiling_driver
         - script.execute: blink_led
     on_state:
       then:

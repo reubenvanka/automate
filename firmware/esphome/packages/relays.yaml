@@ -42,6 +42,14 @@ globals:
     type: bool
     restore_value: yes
     initial_value: 'false'
+  - id: non_ceiling_active_count
+    type: int
+    restore_value: no
+    initial_value: '0'
+  - id: desks_active_count
+    type: int
+    restore_value: no
+    initial_value: '0'
 
 sn74hc595:
   - id: sr_relays
@@ -277,42 +285,65 @@ switch:
       - switch.turn_off: relay_30a
 
 # =============================================================================
+# EXPOSED SWITCHES FOR HOME ASSISTANT - Template switches mirroring relays
+# =============================================================================
 # DEPENDENT AUTOMATIONS - Controlled ONLY by explicit user actions
 # =============================================================================
-# 12V Driver: ON when any non-ceiling light ON, OFF when all OFF
+# 12V Driver: ON when ANY non-ceiling light ON (ALL PWM except ceiling: PCA9685 CH0-15 + GPIO LEDC non-ceiling), OFF when all OFF
 # Ceiling Driver: Follows ceiling light
-# Voltage Stabilizer: ON when any desk switch ON
+# Voltage Stabilizer: ON when any desk relay (desk1/2/3) ON, OFF when all OFF
 
-# Helper scripts for 12V driver (used by lights)
+# Helper scripts for 12V driver (powers ALL non-ceiling PWM: PCA9685 CH0-15 + GPIO LEDC except ceiling CCT)
 script:
-  - id: turn_on_12v_driver
+  - id: increment_12v_users
     then:
-      - if:
-          condition:
-            lambda: 'return !id(relay_12v_driver).state;'
-          then:
-            - switch.turn_on: relay_12v_driver
-  - id: turn_off_12v_driver
+      - lambda: |-
+          id(non_ceiling_active_count)++;
+          if (id(non_ceiling_active_count) == 1) {
+            id(relay_12v_driver).turn_on();
+            id(switch_12v_driver).publish_state(true);
+            id(driver12v_state) = true;
+            ESP_LOGD("12v_driver", "12V Driver ON (users: %d)", id(non_ceiling_active_count));
+          }
+  - id: decrement_12v_users
     then:
-      - if:
-          condition:
-            lambda: 'return id(relay_12v_driver).state;'
-          then:
-            - switch.turn_off: relay_12v_driver
-  - id: turn_on_stabilizer
+      - lambda: |-
+          if (id(non_ceiling_active_count) > 0) {
+            id(non_ceiling_active_count)--;
+          }
+          if (id(non_ceiling_active_count) == 0) {
+            id(relay_12v_driver).turn_off();
+            id(switch_12v_driver).publish_state(false);
+            id(driver12v_state) = false;
+            ESP_LOGD("12v_driver", "12V Driver OFF (users: %d)", id(non_ceiling_active_count));
+          }
+
+# Helper scripts for Stabilizer (controlled by desk relays desk1/2/3)
+  - id: increment_desk_users
     then:
-      - if:
-          condition:
-            lambda: 'return !id(relay_stabilizer).state;'
-          then:
-            - switch.turn_on: relay_stabilizer
-  - id: turn_off_stabilizer
+      - lambda: |-
+          id(desks_active_count)++;
+          if (id(desks_active_count) == 1) {
+            id(relay_stabilizer).turn_on();
+            id(switch_stabilizer).publish_state(true);
+            id(stabilizer_state) = true;
+            ESP_LOGD("stabilizer", "Stabilizer ON (desks: %d)", id(desks_active_count));
+          }
+  - id: decrement_desk_users
     then:
-      - if:
-          condition:
-            lambda: 'return id(relay_stabilizer).state;'
-          then:
-            - switch.turn_off: relay_stabilizer
+      - lambda: |-
+          if (id(desks_active_count) > 0) {
+            id(desks_active_count)--;
+          }
+          if (id(desks_active_count) == 0) {
+            id(relay_stabilizer).turn_off();
+            id(switch_stabilizer).publish_state(false);
+            id(stabilizer_state) = false;
+            ESP_LOGD("stabilizer", "Stabilizer OFF (desks: %d)", id(desks_active_count));
+          }
+
+# Ceiling Driver follows ceiling light directly (handled in light on_turn_on/off)
+# Stabilizer controlled by desk relays (handled in desk template switch turn_on/off)
 
 # Debug: Periodic relay state logging
 interval:
@@ -329,3 +360,4 @@ interval:
           ESP_LOGD("relay_state", "relay_desk3: %d", id(relay_desk3).state ? 1 : 0);
           ESP_LOGD("relay_state", "relay_16a: %d", id(relay_16a).state ? 1 : 0);
           ESP_LOGD("relay_state", "relay_30a: %d", id(relay_30a).state ? 1 : 0);
+          ESP_LOGD("relay_state", "12V users: %d, Desk users: %d", id(non_ceiling_active_count), id(desks_active_count));
