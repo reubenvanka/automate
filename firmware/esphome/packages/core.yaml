@@ -103,17 +103,17 @@ esphome:
             id(relay_ceiling_driver).turn_off();
             id(switch_ceiling_driver).publish_state(false);
           }
-          // Restore 12V Driver - based on COUNTER (not light states which may not be updated yet)
+          // Restore 12V Driver - DO NOT TOGGLE, just sync template switch state
+          // The counter (lights_using_12v_count) was already updated by light on_turn_on callbacks
+          // The relay is already in correct state, just publish the switch state
           if (id(lights_using_12v_count) > 0) {
-            id(relay_12v_driver).turn_on();
             id(switch_12v_driver).publish_state(true);
             id(driver12v_prev_state) = true;
-            ESP_LOGD("boot", "12V Driver ON - %d lights using it", id(lights_using_12v_count));
+            ESP_LOGD("boot", "12V Driver sync: ON (counter: %d)", id(lights_using_12v_count));
           } else {
-            id(relay_12v_driver).turn_off();
             id(switch_12v_driver).publish_state(false);
             id(driver12v_prev_state) = false;
-            ESP_LOGD("boot", "12V Driver OFF - no lights using it");
+            ESP_LOGD("boot", "12V Driver sync: OFF (counter: %d)", id(lights_using_12v_count));
           }
           // Restore Voltage Stabilizer
           if (id(stabilizer_prev_state)) {
