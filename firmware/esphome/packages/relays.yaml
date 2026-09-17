@@ -55,6 +55,10 @@ globals:
     type: int
     restore_value: no
     initial_value: '0'
+  - id: desks_active_count
+    type: int
+    restore_value: no
+    initial_value: '0'
 
 sn74hc595:
   - id: sr_relays
@@ -71,56 +75,56 @@ switch:
     id: relay_fan
     name: "Fan Relay"
     pin: { sn74hc595: sr_relays, number: 0, inverted: true }
-    restore_mode: ALWAYS_OFF
+    restore_mode: RESTORE_DEFAULT_OFF
     internal: true
 
   - platform: gpio
     id: relay_ceiling_driver
     name: "Ceiling Driver Relay"
     pin: { sn74hc595: sr_relays, number: 1, inverted: true }
-    restore_mode: ALWAYS_OFF
+    restore_mode: RESTORE_DEFAULT_OFF
     internal: true
 
   - platform: gpio
     id: relay_12v_driver
     name: "12V Driver Relay"
     pin: { sn74hc595: sr_relays, number: 2, inverted: true }
-    restore_mode: ALWAYS_OFF
+    restore_mode: RESTORE_DEFAULT_OFF
     internal: true
 
   - platform: gpio
     id: relay_stabilizer
     name: "Voltage Stabilizer Relay"
     pin: { sn74hc595: sr_relays, number: 3, inverted: true }
-    restore_mode: ALWAYS_OFF
+    restore_mode: RESTORE_DEFAULT_OFF
     internal: true
 
   - platform: gpio
     id: relay_desk1
     name: "Desk 1 Relay"
     pin: { sn74hc595: sr_relays, number: 4, inverted: true }
-    restore_mode: ALWAYS_OFF
+    restore_mode: RESTORE_DEFAULT_OFF
     internal: true
 
   - platform: gpio
     id: relay_desk2
     name: "Desk 2 Relay"
     pin: { sn74hc595: sr_relays, number: 5, inverted: true }
-    restore_mode: ALWAYS_OFF
+    restore_mode: RESTORE_DEFAULT_OFF
     internal: true
 
   - platform: gpio
     id: relay_desk3
     name: "Desk 3 Relay"
     pin: { sn74hc595: sr_relays, number: 6, inverted: true }
-    restore_mode: ALWAYS_OFF
+    restore_mode: RESTORE_DEFAULT_OFF
     internal: true
 
   - platform: gpio
     id: relay_16a
     name: "16A Relay"
     pin: { sn74hc595: sr_relays, number: 7, inverted: true }
-    restore_mode: ALWAYS_OFF
+    restore_mode: RESTORE_DEFAULT_OFF
     internal: true
 
   # Direct 30A relay on GPIO32
@@ -130,7 +134,7 @@ switch:
     pin:
       number: GPIO32
       inverted: true
-    restore_mode: ALWAYS_OFF
+    restore_mode: RESTORE_DEFAULT_OFF
     internal: true
 
 # =============================================================================
@@ -194,8 +198,10 @@ switch:
       return id(relay_desk1).state;
     turn_on_action:
       - switch.turn_on: relay_desk1
+      - script.execute: increment_desk_users
     turn_off_action:
       - switch.turn_off: relay_desk1
+      - script.execute: decrement_desk_users
 
   - platform: template
     id: switch_desk2
@@ -206,8 +212,10 @@ switch:
       return id(relay_desk2).state;
     turn_on_action:
       - switch.turn_on: relay_desk2
+      - script.execute: increment_desk_users
     turn_off_action:
       - switch.turn_off: relay_desk2
+      - script.execute: decrement_desk_users
 
   - platform: template
     id: switch_desk3
@@ -218,8 +226,10 @@ switch:
       return id(relay_desk3).state;
     turn_on_action:
       - switch.turn_on: relay_desk3
+      - script.execute: increment_desk_users
     turn_off_action:
       - switch.turn_off: relay_desk3
+      - script.execute: decrement_desk_users
 
   - platform: template
     id: switch_16a
@@ -280,6 +290,30 @@ script:
             ESP_LOGD("12v_driver", "12V Driver OFF (users: %d)", id(lights_using_12v_count));
           }
 
+# Helper scripts for desk/voltage stabilizer management
+  - id: increment_desk_users
+    then:
+      - lambda: |-
+          id(desks_active_count)++;
+          if (id(desks_active_count) == 1) {
+            id(relay_stabilizer).turn_on();
+            id(switch_stabilizer).publish_state(true);
+            id(stabilizer_prev_state) = true;
+            ESP_LOGD("desk", "Voltage Stabilizer ON (desks: %d)", id(desks_active_count));
+          }
+  - id: decrement_desk_users
+    then:
+      - lambda: |-
+          if (id(desks_active_count) > 0) {
+            id(desks_active_count)--;
+          }
+          if (id(desks_active_count) == 0) {
+            id(relay_stabilizer).turn_off();
+            id(switch_stabilizer).publish_state(false);
+            id(stabilizer_prev_state) = false;
+            ESP_LOGD("desk", "Voltage Stabilizer OFF (desks: %d)", id(desks_active_count));
+          }
+
 # Debug: Periodic relay state logging
 interval:
   - interval: 30s
@@ -296,3 +330,4 @@ interval:
           ESP_LOGD("relay_state", "relay_16a: %d", id(relay_16a).state ? 1 : 0);
           ESP_LOGD("relay_state", "relay_30a: %d", id(relay_30a).state ? 1 : 0);
           ESP_LOGD("relay_state", "12V users count: %d", id(lights_using_12v_count));
+          ESP_LOGD("relay_state", "Desks active count: %d", id(desks_active_count));
