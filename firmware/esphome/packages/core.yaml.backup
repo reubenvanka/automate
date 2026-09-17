@@ -226,9 +226,10 @@ api:
       then:
         - logger.log: "state_manager not ported; delete_scene unavailable"
     - service: restart
+    - service: restart
       then:
         - lambda: |-
-            esp_restart();
+            id(esp32).restart();
         - delay: 100ms
         - script.execute: blink_led
 # OTA with health-gate
