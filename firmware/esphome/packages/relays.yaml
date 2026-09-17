@@ -70,10 +70,10 @@ switch:
     internal: true
     on_turn_on:
       then:
-        - lambda: 'id(fan_state) = true;'
+        - lambda: 'id(fan_state) = true; ESP_LOGD("relay", "fan_state set to true");'
     on_turn_off:
       then:
-        - lambda: 'id(fan_state) = false;'
+        - lambda: 'id(fan_state) = false; ESP_LOGD("relay", "fan_state set to false");'
 
   - platform: gpio
     id: relay_ceiling_driver
@@ -83,10 +83,10 @@ switch:
     internal: true
     on_turn_on:
       then:
-        - lambda: 'id(ceiling_driver_state) = true;'
+        - lambda: 'id(ceiling_driver_state) = true; ESP_LOGD("relay", "ceiling_driver_state set to true");'
     on_turn_off:
       then:
-        - lambda: 'id(ceiling_driver_state) = false;'
+        - lambda: 'id(ceiling_driver_state) = false; ESP_LOGD("relay", "ceiling_driver_state set to false");'
 
   - platform: gpio
     id: relay_12v_driver
@@ -96,10 +96,10 @@ switch:
     internal: true
     on_turn_on:
       then:
-        - lambda: 'id(driver12v_state) = true;'
+        - lambda: 'id(driver12v_state) = true; ESP_LOGD("relay", "driver12v_state set to true");'
     on_turn_off:
       then:
-        - lambda: 'id(driver12v_state) = false;'
+        - lambda: 'id(driver12v_state) = false; ESP_LOGD("relay", "driver12v_state set to false");'
 
   - platform: gpio
     id: relay_stabilizer
@@ -109,10 +109,10 @@ switch:
     internal: true
     on_turn_on:
       then:
-        - lambda: 'id(stabilizer_state) = true;'
+        - lambda: 'id(stabilizer_state) = true; ESP_LOGD("relay", "stabilizer_state set to true");'
     on_turn_off:
       then:
-        - lambda: 'id(stabilizer_state) = false;'
+        - lambda: 'id(stabilizer_state) = false; ESP_LOGD("relay", "stabilizer_state set to false");'
 
   - platform: gpio
     id: relay_desk1
@@ -122,10 +122,10 @@ switch:
     internal: true
     on_turn_on:
       then:
-        - lambda: 'id(desk1_state) = true;'
+        - lambda: 'id(desk1_state) = true; ESP_LOGD("relay", "desk1_state set to true");'
     on_turn_off:
       then:
-        - lambda: 'id(desk1_state) = false;'
+        - lambda: 'id(desk1_state) = false; ESP_LOGD("relay", "desk1_state set to false");'
 
   - platform: gpio
     id: relay_desk2
@@ -135,10 +135,10 @@ switch:
     internal: true
     on_turn_on:
       then:
-        - lambda: 'id(desk2_state) = true;'
+        - lambda: 'id(desk2_state) = true; ESP_LOGD("relay", "desk2_state set to true");'
     on_turn_off:
       then:
-        - lambda: 'id(desk2_state) = false;'
+        - lambda: 'id(desk2_state) = false; ESP_LOGD("relay", "desk2_state set to false");'
 
   - platform: gpio
     id: relay_desk3
@@ -148,10 +148,10 @@ switch:
     internal: true
     on_turn_on:
       then:
-        - lambda: 'id(desk3_state) = true;'
+        - lambda: 'id(desk3_state) = true; ESP_LOGD("relay", "desk3_state set to true");'
     on_turn_off:
       then:
-        - lambda: 'id(desk3_state) = false;'
+        - lambda: 'id(desk3_state) = false; ESP_LOGD("relay", "desk3_state set to false");'
 
   - platform: gpio
     id: relay_16a
@@ -161,10 +161,10 @@ switch:
     internal: true
     on_turn_on:
       then:
-        - lambda: 'id(relay_16a_state) = true;'
+        - lambda: 'id(relay_16a_state) = true; ESP_LOGD("relay", "relay_16a_state set to true");'
     on_turn_off:
       then:
-        - lambda: 'id(relay_16a_state) = false;'
+        - lambda: 'id(relay_16a_state) = false; ESP_LOGD("relay", "relay_16a_state set to false");'
 
   # Direct 30A relay on GPIO32
   - platform: gpio
@@ -177,10 +177,10 @@ switch:
     internal: true
     on_turn_on:
       then:
-        - lambda: 'id(relay_30a_state) = true;'
+        - lambda: 'id(relay_30a_state) = true; ESP_LOGD("relay", "relay_30a_state set to true");'
     on_turn_off:
       then:
-        - lambda: 'id(relay_30a_state) = false;'
+        - lambda: 'id(relay_30a_state) = false; ESP_LOGD("relay", "relay_30a_state set to false");'
 
 # =============================================================================
 # EXPOSED SWITCHES FOR HOME ASSISTANT - Template switches mirroring relays

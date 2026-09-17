@@ -1,39 +1,22 @@
-# AutoMate — ESPHome main configuration (assembly)
-# File: firmware/esphome/configuration.yaml
-#
-# Compose:  esphome compile configuration.yaml
-# Secrets:  create `secrets.yaml` in this folder (wifi_ssid, wifi_password,
-#           static_ip, gateway, dns1, fallback_ap_password, api_encryption_key,
-#           web_username, web_password) — never commit it.
-#
-# This file merges the modular packages. ESPHome concatenates list keys
-# (output, light, switch, sensor, i2c, ...) and deep-merges dict keys
-# (esphome, wifi, ...) across all included packages.
+# Boot State Restoration Package
+# Runs on boot to restore relay states from persistent globals
 
 esphome:
-  name: "automate"
-  friendly_name: "AutoMate"
-  project:
-    name: "automate.controller"
-    version: "1.0.17"
   on_boot:
     then:
-      - lambda: |-
-          ESP_LOGI("boot", "=== BOOT: on_boot started ===");
       - delay: 100ms
       - script.execute: blink_led
       - delay: 300ms
       - script.execute: blink_led
-      - lambda: |-
-          ESP_LOGI("boot", "=== BOOT: Starting state restoration ===");
+      - logger.log: "=== BOOT: Starting state restoration ==="
       # Simple boot: just read globals and set relays - NO race conditions
       - lambda: |-
-          ESP_LOGI("boot", "=== Starting simple state restoration ===");
-          ESP_LOGI("boot", "fan_state=%d, ceiling_driver_state=%d, driver12v_state=%d", 
+          ESP_LOGD("boot", "=== Starting simple state restoration ===");
+          ESP_LOGD("boot", "fan_state=%d, ceiling_driver_state=%d, driver12v_state=%d", 
                    id(fan_state), id(ceiling_driver_state), id(driver12v_state));
-          ESP_LOGI("boot", "stabilizer_state=%d, desk1_state=%d, desk2_state=%d", 
+          ESP_LOGD("boot", "stabilizer_state=%d, desk1_state=%d, desk2_state=%d", 
                    id(stabilizer_state), id(desk1_state), id(desk2_state));
-          ESP_LOGI("boot", "desk3_state=%d, relay_16a_state=%d, relay_30a_state=%d", 
+          ESP_LOGD("boot", "desk3_state=%d, relay_16a_state=%d, relay_30a_state=%d", 
                    id(desk3_state), id(relay_16a_state), id(relay_30a_state));
           // Fan
           if (id(fan_state)) {
@@ -107,14 +90,5 @@ esphome:
             id(relay_30a).turn_off();
             id(switch_30a).publish_state(false);
           }
-          ESP_LOGI("boot", "Restored all relays from globals");
+          ESP_LOGD("boot", "Restored all relays from globals");
       - output.turn_off: activity_led
-
-packages:
-  core: !include packages/core.yaml
-  pwm: !include packages/pwm.yaml
-  pca9685: !include packages/pca9685.yaml
-  relays: !include packages/relays.yaml
-  sensors: !include packages/sensors.yaml
-  energy: !include packages/energy-sensors.yaml
-  health: !include packages/health.yaml

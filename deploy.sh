@@ -79,18 +79,32 @@ OTA_BACKUP="$FIRMWARE_BACKUP_DIR/firmware_${BACKUP_NAME}.ota.bin"
 cp "$FIRMWARE_BIN" "$FIRMWARE_BACKUP"
 cp "$FACTORY_BIN" "$FACTORY_BACKUP"
 cp "$OTA_BIN" "$OTA_BACKUP"
-echo -e "${GREEN}Firmware backed up to:${NC}"
-echo "  $FIRMWARE_BACKUP"
-echo "  $FACTORY_BACKUP"
-echo "  $OTA_BACKUP"
 
-# Step 4: Backup code
+# Verify firmware backups
+for f in "$FIRMWARE_BACKUP" "$FACTORY_BACKUP" "$OTA_BACKUP"; do
+    if [ ! -s "$f" ]; then
+        echo -e "${RED}ERROR: Firmware backup empty: $f${NC}"
+        exit 1
+    fi
+done
+echo -e "${GREEN}Firmware backed up to:${NC}"
+echo "  $FIRMWARE_BACKUP ($(du -h "$FIRMWARE_BACKUP" | cut -f1))"
+echo "  $FACTORY_BACKUP ($(du -h "$FACTORY_BACKUP" | cut -f1))"
+echo "  $OTA_BACKUP ($(du -h "$OTA_BACKUP" | cut -f1))"
+
+# Step 4: Backup code (run from project root)
 echo -e "
 ${YELLOW}Step 4: Backing up code...${NC}"
+cd "$PROJECT_DIR"
 mkdir -p "$CODE_BACKUP_DIR"
 CODE_BACKUP="$CODE_BACKUP_DIR/code_${BACKUP_NAME}.tar.gz"
-tar -czf "$CODE_BACKUP"     firmware/esphome/packages/     firmware/esphome/configuration.yaml     firmware/esphome/secrets.yaml     CHANGELOG.md 2>/dev/null
+tar -czf "$CODE_BACKUP" firmware/esphome/packages/ firmware/esphome/configuration.yaml firmware/esphome/secrets.yaml CHANGELOG.md
+if [ $? -ne 0 ] || [ ! -s "$CODE_BACKUP" ]; then
+    echo -e "${RED}ERROR: Code backup failed or empty!${NC}"
+    exit 1
+fi
 echo -e "${GREEN}Code backed up to: $CODE_BACKUP${NC}"
+echo -e "  Size: $(du -h "$CODE_BACKUP" | cut -f1)"
 
 # Step 4b: Commit to git
 echo -e "
