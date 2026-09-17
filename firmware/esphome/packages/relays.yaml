@@ -3,23 +3,25 @@
 # All relays are ACTIVE-LOW (input LOW = ON, input HIGH = OFF)
 # relay-test.yaml had inverted: true and worked - use same config
 
-# Global variables for state persistence (restored on boot)
+# =============================================================================
+# GLOBAL STATE VARIABLES - All persist across restarts with restore_value: yes
+# =============================================================================
 globals:
   - id: fan_prev_state
     type: bool
-    restore_value: no
+    restore_value: yes
     initial_value: 'false'
   - id: ceiling_driver_prev_state
     type: bool
-    restore_value: no
+    restore_value: yes
     initial_value: 'false'
   - id: driver12v_prev_state
     type: bool
-    restore_value: no
+    restore_value: yes
     initial_value: 'false'
   - id: stabilizer_prev_state
     type: bool
-    restore_value: no
+    restore_value: yes
     initial_value: 'false'
   - id: desk3_prev_state
     type: bool
@@ -27,12 +29,24 @@ globals:
     initial_value: 'false'
   - id: relay_16a_prev_state
     type: bool
-    restore_value: no
+    restore_value: yes
     initial_value: 'false'
   - id: relay_30a_prev_state
     type: bool
+    restore_value: yes
+    initial_value: 'false'
+
+# Global flag to prevent automations during boot
+  - id: boot_complete
+    type: bool
     restore_value: no
     initial_value: 'false'
+
+# Counter for 12V driver users
+  - id: lights_using_12v_count
+    type: int
+    restore_value: no
+    initial_value: '0'
 
 sn74hc595:
   - id: sr_relays
@@ -41,311 +55,222 @@ sn74hc595:
     latch_pin: GPIO15
     sr_count: 1
 
-# 8 relays via 74HC595 - inverted: true (matches relay-test.yaml that worked)
-# Using switch.gpio platform for native state synchronization with HA/dashboard
+# =============================================================================
+# INTERNAL RELAYS (via 74HC595) - Not exposed to HA directly
+# =============================================================================
 switch:
-  # GPIO relays via 74HC595 - internal (not exposed to HA)
   - platform: gpio
     id: relay_fan
     name: "Fan Relay"
     pin: { sn74hc595: sr_relays, number: 0, inverted: true }
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_OFF
     internal: true
-    on_turn_on:
-      then:
-        - lambda: 'if (!id(relay_fan).state) { id(switch_fan).publish_state(true); id(fan_prev_state) = true; }'
-    on_turn_off:
-      then:
-        - lambda: 'if (id(relay_fan).state) { id(switch_fan).publish_state(false); id(fan_prev_state) = false; }'
 
   - platform: gpio
     id: relay_ceiling_driver
     name: "Ceiling Driver Relay"
     pin: { sn74hc595: sr_relays, number: 1, inverted: true }
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_OFF
     internal: true
-    on_turn_on:
-      then:
-        - lambda: 'if (!id(relay_ceiling_driver).state) { id(switch_ceiling_driver).publish_state(true); id(ceiling_driver_prev_state) = true; }'
-    on_turn_off:
-      then:
-        - lambda: 'if (id(relay_ceiling_driver).state) { id(switch_ceiling_driver).publish_state(false); id(ceiling_driver_prev_state) = false; }'
 
   - platform: gpio
     id: relay_12v_driver
     name: "12V Driver Relay"
     pin: { sn74hc595: sr_relays, number: 2, inverted: true }
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_OFF
     internal: true
-    on_turn_on:
-      then:
-        - lambda: 'if (!id(relay_12v_driver).state) { id(switch_12v_driver).publish_state(true); id(driver12v_prev_state) = true; }'
-    on_turn_off:
-      then:
-        - lambda: 'if (id(relay_12v_driver).state) { id(switch_12v_driver).publish_state(false); id(driver12v_prev_state) = false; }'
 
   - platform: gpio
     id: relay_stabilizer
     name: "Voltage Stabilizer Relay"
     pin: { sn74hc595: sr_relays, number: 3, inverted: true }
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_OFF
     internal: true
-    on_turn_on:
-      then:
-        - lambda: 'if (!id(relay_stabilizer).state) { id(switch_stabilizer).publish_state(true); id(stabilizer_prev_state) = true; }'
-    on_turn_off:
-      then:
-        - lambda: 'if (id(relay_stabilizer).state) { id(switch_stabilizer).publish_state(false); id(stabilizer_prev_state) = false; }'
 
   - platform: gpio
     id: relay_desk1
     name: "Desk 1 Relay"
     pin: { sn74hc595: sr_relays, number: 4, inverted: true }
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_OFF
     internal: true
-    on_turn_on:
-      then:
-        - lambda: 'if (!id(relay_desk1).state) { id(switch_desk1).publish_state(true); id(desk1_prev_state) = true; }'
-    on_turn_off:
-      then:
-        - lambda: 'if (id(relay_desk1).state) { id(switch_desk1).publish_state(false); id(desk1_prev_state) = false; }'
 
   - platform: gpio
     id: relay_desk2
     name: "Desk 2 Relay"
     pin: { sn74hc595: sr_relays, number: 5, inverted: true }
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_OFF
     internal: true
-    on_turn_on:
-      then:
-        - lambda: 'if (!id(relay_desk2).state) { id(switch_desk2).publish_state(true); id(desk2_prev_state) = true; }'
-    on_turn_off:
-      then:
-        - lambda: 'if (id(relay_desk2).state) { id(switch_desk2).publish_state(false); id(desk2_prev_state) = false; }'
 
   - platform: gpio
     id: relay_desk3
     name: "Desk 3 Relay"
     pin: { sn74hc595: sr_relays, number: 6, inverted: true }
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_OFF
     internal: true
-    on_turn_on:
-      then:
-        - lambda: 'if (!id(relay_desk3).state) { id(switch_desk3).publish_state(true); id(desk3_prev_state) = true; }'
-    on_turn_off:
-      then:
-        - lambda: 'if (id(relay_desk3).state) { id(switch_desk3).publish_state(false); id(desk3_prev_state) = false; }'
 
   - platform: gpio
     id: relay_16a
     name: "16A Relay"
     pin: { sn74hc595: sr_relays, number: 7, inverted: true }
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_OFF
     internal: true
-    on_turn_on:
-      then:
-        - lambda: 'if (!id(relay_16a).state) { id(switch_16a).publish_state(true); id(relay_16a_prev_state) = true; }'
-    on_turn_off:
-      then:
-        - lambda: 'if (id(relay_16a).state) { id(switch_16a).publish_state(false); id(relay_16a_prev_state) = false; }'
 
-# Direct 30A relay (active-LOW, direct ESP32 GPIO) - internal (not exposed to HA)
+  # Direct 30A relay on GPIO32
   - platform: gpio
     id: relay_30a
-    name: "30A Main Relay"
+    name: "30A Relay"
     pin:
       number: GPIO32
       inverted: true
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_OFF
     internal: true
-    on_turn_on:
-      then:
-        - lambda: 'if (!id(relay_30a).state) { id(switch_30a).publish_state(true); id(relay_30a_prev_state) = true; }'
-    on_turn_off:
-      then:
-        - lambda: 'if (id(relay_30a).state) { id(switch_30a).publish_state(false); id(relay_30a_prev_state) = false; }'
 
-  # Template switches with proper state sync - read from switch.gpio relays
+# =============================================================================
+# EXPOSED SWITCHES FOR HOME ASSISTANT
+# These are what users control - they drive the internal relays
+# =============================================================================
   - platform: template
     id: switch_fan
-    name: "Fan Switch"
-    restore_mode: RESTORE_DEFAULT_OFF
+    name: "Fan"
+    icon: "mdi:fan"
+    optimistic: false
     lambda: |-
       return id(relay_fan).state;
     turn_on_action:
-      then:
-        - switch.turn_on: relay_fan
+      - switch.turn_on: relay_fan
     turn_off_action:
-      then:
-        - switch.turn_off: relay_fan
+      - switch.turn_off: relay_fan
 
   - platform: template
     id: switch_ceiling_driver
-    name: "Ceiling Driver Switch"
-    restore_mode: RESTORE_DEFAULT_OFF
+    name: "Ceiling Driver"
+    icon: "mdi:ceiling-light"
+    optimistic: false
     lambda: |-
       return id(relay_ceiling_driver).state;
     turn_on_action:
-      then:
-        - switch.turn_on: relay_ceiling_driver
+      - switch.turn_on: relay_ceiling_driver
     turn_off_action:
-      then:
-        - switch.turn_off: relay_ceiling_driver
+      - switch.turn_off: relay_ceiling_driver
 
   - platform: template
     id: switch_12v_driver
-    name: "12V Driver Switch"
-    restore_mode: RESTORE_DEFAULT_OFF
+    name: "12V Driver"
+    icon: "mdi:power-plug"
+    optimistic: false
     lambda: |-
       return id(relay_12v_driver).state;
     turn_on_action:
-      then:
-        - switch.turn_on: relay_12v_driver
+      - switch.turn_on: relay_12v_driver
     turn_off_action:
-      then:
-        - switch.turn_off: relay_12v_driver
+      - switch.turn_off: relay_12v_driver
 
   - platform: template
     id: switch_stabilizer
-    name: "Stabilizer Switch"
-    restore_mode: RESTORE_DEFAULT_OFF
+    name: "Voltage Stabilizer"
+    icon: "mdi:flash"
+    optimistic: false
     lambda: |-
       return id(relay_stabilizer).state;
     turn_on_action:
-      then:
-        - switch.turn_on: relay_stabilizer
+      - switch.turn_on: relay_stabilizer
     turn_off_action:
-      then:
-        - switch.turn_off: relay_stabilizer
+      - switch.turn_off: relay_stabilizer
 
   - platform: template
     id: switch_desk1
-    name: "Desk 1 Switch"
-    restore_mode: RESTORE_DEFAULT_OFF
+    name: "Desk 1"
+    icon: "mdi:desk"
+    optimistic: false
     lambda: |-
       return id(relay_desk1).state;
     turn_on_action:
-      then:
-        - switch.turn_on: relay_desk1
+      - switch.turn_on: relay_desk1
     turn_off_action:
-      then:
-        - switch.turn_off: relay_desk1
+      - switch.turn_off: relay_desk1
 
   - platform: template
     id: switch_desk2
-    name: "Desk 2 Switch"
-    restore_mode: RESTORE_DEFAULT_OFF
+    name: "Desk 2"
+    icon: "mdi:desk"
+    optimistic: false
     lambda: |-
       return id(relay_desk2).state;
     turn_on_action:
-      then:
-        - switch.turn_on: relay_desk2
+      - switch.turn_on: relay_desk2
     turn_off_action:
-      then:
-        - switch.turn_off: relay_desk2
+      - switch.turn_off: relay_desk2
 
   - platform: template
     id: switch_desk3
-    name: "Desk 3 Switch"
-    restore_mode: RESTORE_DEFAULT_OFF
+    name: "Desk 3"
+    icon: "mdi:desk"
+    optimistic: false
     lambda: |-
       return id(relay_desk3).state;
     turn_on_action:
-      then:
-        - switch.turn_on: relay_desk3
+      - switch.turn_on: relay_desk3
     turn_off_action:
-      then:
-        - switch.turn_off: relay_desk3
+      - switch.turn_off: relay_desk3
 
   - platform: template
     id: switch_16a
-    name: "16A Switch"
-    restore_mode: RESTORE_DEFAULT_OFF
+    name: "16A Relay"
+    icon: "mdi:power-socket"
+    optimistic: false
     lambda: |-
       return id(relay_16a).state;
     turn_on_action:
-      then:
-        - switch.turn_on: relay_16a
+      - switch.turn_on: relay_16a
     turn_off_action:
-      then:
-        - switch.turn_off: relay_16a
+      - switch.turn_off: relay_16a
 
   - platform: template
     id: switch_30a
-    name: "30A Main Switch"
-    restore_mode: RESTORE_DEFAULT_OFF
+    name: "30A Relay"
+    icon: "mdi:power-socket"
+    optimistic: false
     lambda: |-
       return id(relay_30a).state;
     turn_on_action:
-      then:
-        - switch.turn_on: relay_30a
+      - switch.turn_on: relay_30a
     turn_off_action:
-      then:
-        - switch.turn_off: relay_30a
+      - switch.turn_off: relay_30a
 
-# ============================================================================
-# DEPENDENT RELAY AUTOMATIONS (per SPECIFICATIONS.md)
-# ============================================================================
-# AM-RLY-03 (12V Driver): ON when any non-ceiling PWM active, OFF when all inactive
-# AM-RLY-02 (Ceiling Driver): Follow ceiling PWM state; OFF when both ceiling PWM off
-# AM-RLY-04 (Voltage Stabilizer): ON when any desk ON, OFF only when all desks OFF
+# =============================================================================
+# DEPENDENT RELAY AUTOMATIONS
+# Controlled ONLY by explicit user actions (lights/switches), not binary sensors
+# =============================================================================
+# 12V Driver: ON when any non-ceiling light turns ON, OFF when all turn OFF
+# Ceiling Driver: Follows ceiling light state  
+# Voltage Stabilizer: ON when any desk switch ON, OFF when all OFF
 
-binary_sensor:
-  - platform: template
-    id: non_ceiling_pwm_active
-    name: "Non-Ceiling PWM Active"
-    lambda: |-
-      return (
-        id(light_desk1).current_values.is_on() || id(light_desk2).current_values.is_on() ||
-        id(light_photo_spot).current_values.is_on() || id(light_wall_bounce).current_values.is_on() ||
-        id(light_terrace).current_values.is_on() || id(light_washroom).current_values.is_on() ||
-        id(light_monitor1_backlight).current_values.is_on() || id(light_monitor2_backlight).current_values.is_on() ||
-        id(light_monitor3_backlight).current_values.is_on() || id(light_monitor4_backlight).current_values.is_on() ||
-        id(light_desk_light1).current_values.is_on() || id(light_desk_light2).current_values.is_on() ||
-        id(light_table_light).current_values.is_on() || id(light_shelf_light1).current_values.is_on() ||
-        id(light_shelf_light2).current_values.is_on() || id(light_cupboard_bounce).current_values.is_on() ||
-        id(light_cupboard_spot).current_values.is_on() || id(light_door_spot).current_values.is_on() ||
-        id(light_exhaust_fans).current_values.is_on() || id(light_terrace_ambient).current_values.is_on()
-      );
-    on_state:
-      then:
-        - if:
-            condition:
-              lambda: 'return x;'
-            then:
-              - switch.turn_on: relay_12v_driver
-            else:
-              - switch.turn_off: relay_12v_driver
-
-  - platform: template
-    id: ceiling_pwm_active
-    name: "Ceiling PWM Active"
-    lambda: |-
-      return id(light_ceiling).current_values.is_on();
-    on_state:
-      then:
-        - if:
-            condition:
-              lambda: 'return x;'
-            then:
-              - switch.turn_on: relay_ceiling_driver
-            else:
-              - switch.turn_off: relay_ceiling_driver
-
-  - platform: template
-    id: desks_active
-    name: "Any Desk Active"
-    lambda: |-
-      return (id(switch_desk1).state || id(switch_desk2).state || id(switch_desk3).state);
-    on_state:
-      then:
-        - if:
-            condition:
-              lambda: 'return x;'
-            then:
-              - switch.turn_on: relay_stabilizer
-            else:
-              - switch.turn_off: relay_stabilizer
+# We use a simple counter approach for 12V driver to track how many lights need it
+# (defined in the main globals section at top)
+# Helper scripts for 12V driver management
+script:
+  - id: increment_12v_users
+    then:
+      - lambda: |-
+          id(lights_using_12v_count)++;
+          if (id(lights_using_12v_count) == 1) {
+            id(relay_12v_driver).turn_on();
+            id(switch_12v_driver).publish_state(true);
+            id(driver12v_prev_state) = true;
+            ESP_LOGD("12v_driver", "12V Driver ON (users: %d)", id(lights_using_12v_count));
+          }
+  - id: decrement_12v_users
+    then:
+      - lambda: |-
+          if (id(lights_using_12v_count) > 0) {
+            id(lights_using_12v_count)--;
+          }
+          if (id(lights_using_12v_count) == 0) {
+            id(relay_12v_driver).turn_off();
+            id(switch_12v_driver).publish_state(false);
+            id(driver12v_prev_state) = false;
+            ESP_LOGD("12v_driver", "12V Driver OFF (users: %d)", id(lights_using_12v_count));
+          }
 
 # Debug: Periodic relay state logging
 interval:
@@ -353,12 +278,13 @@ interval:
     then:
       - lambda: |-
           ESP_LOGD("relay_state", "=== Relay States ===");
-          ESP_LOGD("relay_state", "relay_fan: %d", id(relay_fan) ? 1 : 0);
-          ESP_LOGD("relay_state", "relay_ceiling_driver: %d", id(relay_ceiling_driver) ? 1 : 0);
-          ESP_LOGD("relay_state", "relay_12v_driver: %d", id(relay_12v_driver) ? 1 : 0);
-          ESP_LOGD("relay_state", "relay_stabilizer: %d", id(relay_stabilizer) ? 1 : 0);
-          ESP_LOGD("relay_state", "relay_desk1: %d", id(relay_desk1) ? 1 : 0);
-          ESP_LOGD("relay_state", "relay_desk2: %d", id(relay_desk2) ? 1 : 0);
-          ESP_LOGD("relay_state", "relay_desk3: %d", id(relay_desk3) ? 1 : 0);
-          ESP_LOGD("relay_state", "relay_16a: %d", id(relay_16a) ? 1 : 0);
-          ESP_LOGD("relay_state", "relay_30a: %d", id(relay_30a) ? 1 : 0);
+          ESP_LOGD("relay_state", "relay_fan: %d", id(relay_fan).state ? 1 : 0);
+          ESP_LOGD("relay_state", "relay_ceiling_driver: %d", id(relay_ceiling_driver).state ? 1 : 0);
+          ESP_LOGD("relay_state", "relay_12v_driver: %d", id(relay_12v_driver).state ? 1 : 0);
+          ESP_LOGD("relay_state", "relay_stabilizer: %d", id(relay_stabilizer).state ? 1 : 0);
+          ESP_LOGD("relay_state", "relay_desk1: %d", id(relay_desk1).state ? 1 : 0);
+          ESP_LOGD("relay_state", "relay_desk2: %d", id(relay_desk2).state ? 1 : 0);
+          ESP_LOGD("relay_state", "relay_desk3: %d", id(relay_desk3).state ? 1 : 0);
+          ESP_LOGD("relay_state", "relay_16a: %d", id(relay_16a).state ? 1 : 0);
+          ESP_LOGD("relay_state", "relay_30a: %d", id(relay_30a).state ? 1 : 0);
+          ESP_LOGD("relay_state", "12V users count: %d", id(lights_using_12v_count));
