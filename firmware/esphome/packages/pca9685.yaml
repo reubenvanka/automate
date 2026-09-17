@@ -98,6 +98,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -117,6 +118,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -136,6 +138,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -155,6 +158,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -174,6 +178,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -193,6 +198,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -212,6 +218,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -231,6 +238,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -250,6 +258,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -269,6 +278,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -288,6 +298,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -307,6 +318,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -326,6 +338,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -345,6 +358,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -364,6 +378,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
@@ -383,6 +398,7 @@ light:
         - script.execute: blink_led
     on_turn_off:
       then:
+        - script.execute: decrement_12v_users
         - script.execute: blink_led
     on_state:
       then:
