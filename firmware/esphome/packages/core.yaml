@@ -84,6 +84,7 @@ esphome:
             ESP_LOGD("boot", "No saved Washroom state, defaulting to off");
           }
       # Restore all relay states from globals AFTER lights are restored
+      - delay: 500ms  # Wait for lights to fully update their states
       - lambda: |-
           ESP_LOGD("boot", "=== Restoring relays ===");
           // Restore Fan
@@ -102,19 +103,17 @@ esphome:
             id(relay_ceiling_driver).turn_off();
             id(switch_ceiling_driver).publish_state(false);
           }
-          // Restore 12V Driver - based on ACTUAL light states (not globals)
-          // The lights' on_turn_on already turned on relay_12v_driver if they were on
-          bool any_light_on = id(light_ceiling).current_values.is_on() || id(light_desk1).current_values.is_on() || id(light_desk2).current_values.is_on() || id(light_photo_spot).current_values.is_on() || id(light_wall_bounce).current_values.is_on() || id(light_terrace).current_values.is_on() || id(light_washroom).current_values.is_on();
-          if (any_light_on) {
+          // Restore 12V Driver - based on COUNTER (not light states which may not be updated yet)
+          if (id(lights_using_12v_count) > 0) {
             id(relay_12v_driver).turn_on();
             id(switch_12v_driver).publish_state(true);
             id(driver12v_prev_state) = true;
-            ESP_LOGD("boot", "12V Driver ON - lights are active");
+            ESP_LOGD("boot", "12V Driver ON - %d lights using it", id(lights_using_12v_count));
           } else {
             id(relay_12v_driver).turn_off();
             id(switch_12v_driver).publish_state(false);
             id(driver12v_prev_state) = false;
-            ESP_LOGD("boot", "12V Driver OFF - no lights active");
+            ESP_LOGD("boot", "12V Driver OFF - no lights using it");
           }
           // Restore Voltage Stabilizer
           if (id(stabilizer_prev_state)) {
