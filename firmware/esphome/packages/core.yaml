@@ -33,22 +33,22 @@ esphome:
             id(ceiling_driver_prev_state) = false;
           }
           // Restore Desk 1 Light (CCT)
-          if (id(desk1_prev_state)) {
+          if (id(desk1_relay_prev_state)) {
             auto call = id(light_desk1).turn_on();
             call.set_brightness(id(desk1_prev_brightness));
             call.set_color_temperature(id(desk1_prev_color_temp));
             call.perform();
-            ESP_LOGD("boot", "Restored Desk1: On - %s, Brightness - %.0f%%, Temperature - %d K", id(desk1_prev_state) ? "Yes" : "No", id(desk1_prev_brightness) * 100, (int)(1000000.0 / id(desk1_prev_color_temp)));
+            ESP_LOGD("boot", "Restored Desk1: On - %s, Brightness - %.0f%%, Temperature - %d K", id(desk1_relay_prev_state) ? "Yes" : "No", id(desk1_prev_brightness) * 100, (int)(1000000.0 / id(desk1_prev_color_temp)));
           } else {
             ESP_LOGD("boot", "No saved Desk1 state, defaulting to off");
           }
           // Restore Desk 2 Light (CCT)
-          if (id(desk2_prev_state)) {
+          if (id(desk2_relay_prev_state)) {
             auto call = id(light_desk2).turn_on();
             call.set_brightness(id(desk2_prev_brightness));
             call.set_color_temperature(id(desk2_prev_color_temp));
             call.perform();
-            ESP_LOGD("boot", "Restored Desk2: On - %s, Brightness - %.0f%%, Temperature - %d K", id(desk2_prev_state) ? "Yes" : "No", id(desk2_prev_brightness) * 100, (int)(1000000.0 / id(desk2_prev_color_temp)));
+            ESP_LOGD("boot", "Restored Desk2: On - %s, Brightness - %.0f%%, Temperature - %d K", id(desk2_relay_prev_state) ? "Yes" : "No", id(desk2_prev_brightness) * 100, (int)(1000000.0 / id(desk2_prev_color_temp)));
           } else {
             ESP_LOGD("boot", "No saved Desk2 state, defaulting to off");
           }
@@ -132,7 +132,7 @@ esphome:
             id(switch_stabilizer).publish_state(false);
           }
           // Restore Desk 1
-          if (id(desk1_prev_state)) {
+          if (id(desk1_relay_prev_state)) {
             id(relay_desk1).turn_on();
             id(switch_desk1).publish_state(true);
           } else {
@@ -140,7 +140,7 @@ esphome:
             id(switch_desk1).publish_state(false);
           }
           // Restore Desk 2
-          if (id(desk2_prev_state)) {
+          if (id(desk2_relay_prev_state)) {
             id(relay_desk2).turn_on();
             id(switch_desk2).publish_state(true);
           } else {
@@ -148,7 +148,7 @@ esphome:
             id(switch_desk2).publish_state(false);
           }
           // Restore Desk 3
-          if (id(desk3_prev_state)) {
+          if (id(desk3_relay_prev_state)) {
             id(relay_desk3).turn_on();
             id(switch_desk3).publish_state(true);
           } else {
@@ -181,8 +181,8 @@ esphome:
           ESP_LOGD("boot", "Restored relays: Fan - %s, CeilingDrv - %s, 12V - %s, Stab - %s, Desk1 - %s, Desk2 - %s, Desk3 - %s, 16A - %s, 30A - %s",
             id(fan_prev_state) ? "On" : "Off", id(ceiling_driver_prev_state) ? "On" : "Off",
             id(driver12v_prev_state) ? "On" : "Off", id(stabilizer_prev_state) ? "On" : "Off",
-            id(desk1_prev_state) ? "On" : "Off", id(desk2_prev_state) ? "On" : "Off",
-            id(desk3_prev_state) ? "On" : "Off", id(relay_16a_prev_state) ? "On" : "Off",
+            id(desk1_relay_prev_state) ? "On" : "Off", id(desk2_relay_prev_state) ? "On" : "Off",
+            id(desk3_relay_prev_state) ? "On" : "Off", id(relay_16a_prev_state) ? "On" : "Off",
             id(relay_30a_prev_state) ? "On" : "Off");
       - output.turn_off: activity_led  # ensure LED is OFF after boot
 

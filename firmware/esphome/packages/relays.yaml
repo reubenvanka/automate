@@ -23,7 +23,15 @@ globals:
     type: bool
     restore_value: yes
     initial_value: 'false'
-  - id: desk3_prev_state
+  - id: desk3_relay_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: desk1_relay_prev_state
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: desk2_relay_prev_state
     type: bool
     restore_value: yes
     initial_value: 'false'
